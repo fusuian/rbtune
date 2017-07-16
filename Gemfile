@@ -1,6 +1,4 @@
-# A sample Gemfile
 source "https://rubygems.org"
 
-# gem "rails"
-gem "mechanize"
-gem "systemu"
+# Specify your gem's dependencies in rbradi.gemspec
+gemspec

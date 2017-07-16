@@ -1,3 +1,11 @@
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
 authkey.png
 player.swf
-.bundle/config

@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-require "bundler"
-Bundler.require
-$: << './lib'
 require "rbradi"
+include Rbradi
 
 require "optparse"
 require "pp"
