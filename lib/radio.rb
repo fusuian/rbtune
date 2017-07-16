@@ -2,7 +2,7 @@ require "bundler"
 Bundler.require
 
 class Radio
-	def make_rtmpdump
+	def create_player
 		# rtmpdumpのコマンドラインを生成する(playから呼ばれる)
 	end
 
@@ -44,15 +44,15 @@ class Radio
 			sleep wait 
 		end
 
-		rtmpdump = make_rtmpdump channels[@channel]
-		pp rtmpdump
+		player = create_player self.class::channels[@channel]
+		pp player
 		if filename
 			dt = datetime
 			tmpfile = make_tmpfile @channel, dt
-			rtmpdump.rec tmpfile, sec, quiet
+			player.rec tmpfile, sec, quiet
 			convert tmpfile, make_recfile(filename, dt)
 		else
-			rtmpdump.play
+			player.play
 		end
 	end
 

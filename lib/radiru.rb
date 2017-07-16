@@ -10,7 +10,7 @@ class Radiru < Radio
 		'm4a'
 	end
 
-	def make_rtmpdump(channel)
+	def create_player(channel)
 		rtmp = "rtmpe://netradio-#{channel}-flash.nhk.jp"
 		playpath = channel2flash[channel]
 		playerurl= "http://www3.nhk.or.jp/netradio/files/swf/rtmpe.swf"

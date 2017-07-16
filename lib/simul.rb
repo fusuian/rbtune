@@ -22,7 +22,7 @@ class Simul < Radio
 	end
 
 
-	def make_rtmpdump(channel)
+	def create_player(channel)
 		# ch = channels[channel]
 		# raise "wrong channel: #{channel} " unless ch
 		mplayer = Mplayer.new channel
