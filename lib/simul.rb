@@ -4,7 +4,7 @@ require "./lib/mplayer"
 
 class Simul < Radio
 
-	def channels
+	def self.channels
 		{
 			"tachikawa" => "mmsh://hdv3.nkansai.tv/FmTachikawa?MSWMExt=.asf",
 			"chofufm" => "mmsh://hdv3.nkansai.tv/chofu?MSWMExt=.asf",

@@ -20,20 +20,20 @@ class Radiru < Radio
 	end
 
 
-	def channels
+	def self.channels
 		{
-			"nhk-r1" => 'r1',
-			"nhk-r2" => 'r2',
-			"nhk-fm" => 'fm',
+			"nhkr1" => 'r1',
+			"nhkr2" => 'r2',
+			"nhkfm" => 'fm',
 
-			"nhk-r1[sendai]" => 'hkr1',
-			"nhk-fm[sendai]" => 'hkfm',
+			"nhkr1[sendai]" => 'hkr1',
+			"nhkfm[sendai]" => 'hkfm',
 
-			"nhk-r1[nagoya]" => 'ckr1',
-			"nhk-fm[nagoya]" => 'ckfm',
+			"nhkr1[nagoya]" => 'ckr1',
+			"nhkfm[nagoya]" => 'ckfm',
 
-			"nhk-r1[osaka]" => 'bkr1',
-			"nhk-fm[osaka]" => 'bkfm',
+			"nhkr1[osaka]" => 'bkr1',
+			"nhkfm[osaka]" => 'bkfm',
 		}
 	end
 

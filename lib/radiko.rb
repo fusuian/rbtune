@@ -13,7 +13,7 @@ class Radiko < Radio
 		@agent = Mechanize.new
 	end
 
-	def channels
+	def self.channels
 		{
 		  'tbs' =>          "TBS",
 		  'bunka' =>        "QRR", 
@@ -63,11 +63,13 @@ class Radiko < Radio
 	def play(opts={})
 		p '***play'
 		raise 'not tuned yet.' unless @channel
-		channel = channels[@channel]
+		# pp class::channels
+		channel = self.class::channels[@channel]
 		$stderr.puts "fetching #{channel}.xml..."
 		xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
 		@stream_uri = xml.at('//url/item').text
 		p '****stream_uri'+@stream_uri
+		# binding.pry
 		dt = datetime
 		tmpfile = super opts
 		#p '***extract_audio'

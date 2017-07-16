@@ -4,7 +4,7 @@
 require "./lib/radiko"
 
 class RadikoPremium < Radiko
-	def channels
+	def self.channels
 		{
 		  'cbc' =>      "CBC",
 		  'hbc' =>      "HBC",
@@ -18,6 +18,7 @@ class RadikoPremium < Radiko
 		  'rab' => "RAB",
 		  'fmoita' =>   "FM_OITA",
 		  'fmniigata' => "FMNIIGATA",
+		  'mbs' => "MBS",
 		}
 	end
 
