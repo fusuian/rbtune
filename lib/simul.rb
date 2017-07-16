@@ -1,6 +1,6 @@
 # simul.rb
-require "./lib/radio"
-require "./lib/mplayer"
+require "radio"
+require "mplayer"
 
 class Simul < Radio
 

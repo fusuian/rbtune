@@ -1,8 +1,8 @@
 # radiru.rb
 # coding: utf-8
 
-require "./lib/radio"
-require "./lib/rtmpdump"
+require "radio"
+require "rtmpdump"
 
 class Radiru < Radio
 

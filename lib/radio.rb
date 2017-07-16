@@ -1,5 +1,3 @@
-require "bundler"
-Bundler.require
 
 class Radio
 	def create_player

@@ -1,5 +1,5 @@
 # mplayer.rb
-require "./lib/player"
+require "player"
 
 class Mplayer < Player
 

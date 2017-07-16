@@ -1,5 +1,5 @@
 # rtmpdump.rb
-require "./lib/player"
+require "player"
 
 
 class RtmpDump < Player

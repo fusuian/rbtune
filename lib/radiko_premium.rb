@@ -1,7 +1,7 @@
 #radiko.rb
 # coding: utf-8
 
-require "./lib/radiko"
+require "radiko"
 
 class RadikoPremium < Radiko
 	def self.channels

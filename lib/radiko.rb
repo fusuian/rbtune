@@ -1,8 +1,10 @@
 #radiko.rb
 # coding: utf-8
 
-require "./lib/radio"
-require "./lib/rtmpdump"
+require "bundler"
+Bundler.require
+require "radio"
+require "rtmpdump"
 
 class Radiko < Radio
 	
