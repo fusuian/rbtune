@@ -1,4 +1,6 @@
-# player.rb
+# Player 仮想クラス
+# Mplayer等で継承して使う
+
 class Player < Hash
 
 	def command; end

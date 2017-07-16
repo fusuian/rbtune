@@ -1,3 +1,11 @@
+# Radio仮想基底クラス
+# Radiko, Radiru, Simul等で継承して使う
+#
+# radio.login account, password
+# radio.open
+# radio.tune channel
+# radio.play
+# radio.close
 
 class Radio
 	def create_player
