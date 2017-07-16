@@ -50,7 +50,7 @@ class Radiko < Radio
 		$stderr.puts 'fetching auth1...'
 		auth1 = get_auth1 'https://radiko.jp/v2/api/auth1_fms'
 		# pp auth1
-		@authtoken = auth1['X-Radiko-AuthToken']
+		@authtoken = auth1['X-Radiko-AuthToken'] || auth1['X-RADIKO-AUTHTOKEN']
 		offset = auth1['X-Radiko-KeyOffset'].to_i
 		length = auth1['X-Radiko-KeyLength'].to_i
 		# pp [@authtoken, offset, length]
