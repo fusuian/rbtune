@@ -1,8 +1,7 @@
 #radiko.rb
 # coding: utf-8
 
-require "bundler"
-Bundler.require
+require "mechanize"
 require "radio"
 require "rtmpdump"
 
