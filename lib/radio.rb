@@ -7,6 +7,9 @@
 # radio.play
 # radio.close
 
+require "date"
+
+
 class Radio
 	def create_player
 		# rtmpdumpのコマンドラインを生成する(playから呼ばれる)
@@ -94,7 +97,7 @@ class Radio
 
 
 	def datetime
-		Time.now.strftime("%m%d-%y.%H%M")
+		DateTime.now.to_s[0..15].gsub(/:/, '=')
   end
 
 
