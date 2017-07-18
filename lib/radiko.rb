@@ -14,6 +14,8 @@ class Radiko < Radio
 		@agent = Mechanize.new
 	end
 
+	attr_reader :agent
+
 	def self.channels
 		{
 		  'tbs' =>          "TBS",
