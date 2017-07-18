@@ -5,4 +5,5 @@ module Rbradi
 	require "radiko"
 	require "radiko_premium"
 	require "simul"
+	require "ffmpeg"
 end

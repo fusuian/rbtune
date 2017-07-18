@@ -62,6 +62,7 @@ class Radiko < Radio
 		@areaid = get_auth2 'https://radiko.jp/v2/api/auth2_fms', @authtoken, @partialkey
 	end
 
+	alias :radio_play :play
 
 	def play(opts={})
 		p '***play'
@@ -72,11 +73,7 @@ class Radiko < Radio
 		xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
 		@stream_uri = xml.at('//url/item').text
 		p '****stream_uri'+@stream_uri
-		# binding.pry
-		dt = datetime
-		tmpfile = super opts
-		#p '***extract_audio'
-		#extract_audio tmpfile, file, dt
+		super opts
 	end
 
 
