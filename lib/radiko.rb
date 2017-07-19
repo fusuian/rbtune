@@ -4,6 +4,7 @@
 require "mechanize"
 require "radio"
 require "rtmpdump"
+# require "pry"
 
 class Radiko < Radio
 	
@@ -55,6 +56,7 @@ class Radiko < Radio
 		offset = auth1['X-Radiko-KeyOffset'].to_i
 		length = auth1['X-Radiko-KeyLength'].to_i
 		# pp [@authtoken, offset, length]
+		# binding.pry unless @authtoken
 		@partialkey = get_partialkey @keyfile, offset, length
 
 		$stderr.puts 'fetching auth2...'
@@ -62,7 +64,6 @@ class Radiko < Radio
 		@areaid = get_auth2 'https://radiko.jp/v2/api/auth2_fms', @authtoken, @partialkey
 	end
 
-	alias :radio_play :play
 
 	def play(opts={})
 		p '***play'

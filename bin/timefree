@@ -3,40 +3,49 @@
 require "pry"
 require "rbradi"
 require "pp"
+require "optparse"
 
-area_id = ARGV[0] || 'JP8'
+channel = nil 
+filename = nil 
+date = nil
+time = nil
+min = 30 
+
+radio_classes = [Radiko, RadikoPremium]
+stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
+
+opt = OptionParser.new
+opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
+opt.on("-d 録音開始日", "--date") {|v| date=v}
+opt.on("-t 録音開始時刻", "--time") {|v| time=v}
+opt.on("-m [30]", "--min", Float, "録音時間 (指定なしは、30min)"){|v| min=v}
+opt.on("-o ファイル名", "--output","出力ファイル"){|v| filename=v}
+opt.parse! ARGV
+
+
+radio_class = radio_classes.find do |radio|
+  radio::channels[channel]
+end
+raise "Channel #{channel} not found." unless radio_class
+
+ch = radio_class::channels[channel]
+
+begin
+	starttime = DateTime.parse("#{date}T#{time}")
+rescue
+	$stderr.puts "Format Error: date #{date} time #{time} "
+	exit
+end
+
+sec = min*60
 
 account = "fusuian@gmail.com"
 password =  "raradiko"
 
-class TimeFree < RadikoPremium
-	def play(opts={})
-		ch= 'CBC'
-		from="20170716080000"
-		to=  "20170716090000"
-		@stream_uri=%Q(https://radiko.jp/v2/api/ts/playlist.m3u8?l=15&station_id=#{ch}&ft=#{from}&to=#{to})
-		radio_play opts
-	end
-
-	def make_tmpfile(channel, datetime, outdir = @outdir)
-		File.join outdir, "#{channel}.#{datetime}.#{ext}"
-	end
-
-	def convert(a,b)
-	end
-
-	def create_player(channel)
-		ffmpeg = FFMpeg.new
-		ffmpeg.merge! 'loglevel' => 'fatal', 'n' => ''
-		ffmpeg.merge! 'headers' => %Q("X-Radiko-AuthToken: #{@authtoken}")
-		ffmpeg.merge! 'i' => %Q("#{@stream_uri}")
-		ffmpeg.merge! 'vn' => ''
-	end
-end
 
 radio=TimeFree.new 
 radio.login account, password 
 radio.open
-radio.tune 'cbc'
-radio.play filename: 'test'
+#radio.tune channel
+radio.play channel: ch, from: starttime, sec: sec, filename: filename
 radio.close

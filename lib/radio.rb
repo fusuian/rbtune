@@ -45,6 +45,7 @@ class Radio
 		filename = opts[:filename]
 		quiet = opts[:quiet] || !filename
 		@outdir = opts[:outdir] || '.'
+		dt = opts[:datetime] || DateTime.now
 
 		$stderr.puts "play: #{sec}, #{filename}, #{quiet}, #{wait}"
 
@@ -56,7 +57,7 @@ class Radio
 		player = create_player self.class::channels[@channel]
 		pp player
 		if filename
-			dt = datetime
+			dt = datetime dt
 			tmpfile = make_tmpfile @channel, dt
 			player.rec tmpfile, sec, quiet
 			convert tmpfile, make_recfile(filename, dt)
@@ -64,6 +65,9 @@ class Radio
 			player.play
 		end
 	end
+
+	alias :radio_play :play
+
 
 
 	def convert(tmpfile, recfile)
@@ -96,13 +100,14 @@ class Radio
 	end
 
 
-	def datetime
-		DateTime.now.to_s[0..15].gsub(/:/, '=')
+	def datetime(dt)
+		dt.to_s[0..15].gsub(/:/, '=')
   end
 
 
 	def make_tmpfile(channel, datetime, outdir = @outdir)
 		File.join outdir, "#{channel}.#{datetime}.#{$$}.tmp"
+		# File.join outdir, "#{$$}.tmp"
 	end
 
 
