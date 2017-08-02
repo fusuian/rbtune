@@ -49,7 +49,7 @@ class Radio
 
 		$stderr.puts "play: #{sec}, #{filename}, #{quiet}, #{wait}"
 
-		if wait
+		if wait > 0
 			$stderr.puts "waiting #{wait} sec..."
 			sleep wait 
 		end
