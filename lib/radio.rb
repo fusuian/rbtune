@@ -40,7 +40,7 @@ class Radio
 
 	def play(opts={})
 		raise 'not tuned yet.' unless @channel
-		wait = opts[:wait]
+		wait = opts[:wait] || 0
 		sec = opts[:sec] || 1800
 		filename = opts[:filename]
 		quiet = opts[:quiet] 
