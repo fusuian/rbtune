@@ -47,7 +47,8 @@ class Radio
 		@outdir = opts[:outdir] || '.'
 		dt = opts[:datetime] || DateTime.now
 
-		$stderr.puts "play: #{sec}, #{filename}, #{quiet}, #{wait}"
+		# $stderr.puts "opts: #{opts}"
+		# $stderr.puts "play: #{sec}, #{filename}, #{quiet}, #{wait}"
 
 		if wait > 0
 			$stderr.puts "waiting #{wait} sec..."
@@ -55,7 +56,7 @@ class Radio
 		end
 
 		player = create_player self.class::channels[@channel]
-		pp player
+		# pp player
 		if filename
 			dt = datetime dt
 			tmpfile = make_tmpfile @channel, dt

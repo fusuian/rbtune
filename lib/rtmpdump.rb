@@ -15,7 +15,7 @@ class RtmpDump < Player
 
 
 	def play
-		puts "play: #{to_s} | mplayer -"
+		# puts "play: #{to_s} | mplayer -"
 		`#{to_s} | mplayer -`
 	end
 
@@ -26,10 +26,10 @@ class RtmpDump < Player
 
 		if quiet
 			merge! 'flv' => tmpfile
-			pp to_s
+			# pp to_s
 			`#{to_s}`
 		else
-			pp "#{to_s} | tee #{tmpfile} | mplayer -"
+			# pp "#{to_s} | tee #{tmpfile} | mplayer -"
 			`#{to_s} | tee #{tmpfile} | mplayer -`
 		end
 	end

@@ -49,7 +49,7 @@ class Radiko < Radio
 			swfextract @playerfile, @keyfile, '-b 12'
 		end
 
-		$stderr.puts 'fetching auth1...'
+		# $stderr.puts 'fetching auth1...'
 		auth1 = get_auth1 'https://radiko.jp/v2/api/auth1_fms'
 		# pp auth1
 		@authtoken = auth1['X-Radiko-AuthToken'] || auth1['X-RADIKO-AUTHTOKEN']
@@ -59,21 +59,21 @@ class Radiko < Radio
 		# binding.pry unless @authtoken
 		@partialkey = get_partialkey @keyfile, offset, length
 
-		$stderr.puts 'fetching auth2...'
-		pp [@authtoken, @partialkey]
+		# $stderr.puts 'fetching auth2...'
+		# pp [@authtoken, @partialkey]
 		@areaid = get_auth2 'https://radiko.jp/v2/api/auth2_fms', @authtoken, @partialkey
 	end
 
 
 	def play(opts={})
-		p '***play'
+		# p '***play'
 		raise 'not tuned yet.' unless @channel
 		# pp class::channels
 		channel = self.class::channels[@channel]
-		$stderr.puts "fetching #{channel}.xml..."
+		# $stderr.puts "fetching #{channel}.xml..."
 		xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
 		@stream_uri = xml.at('//url/item').text
-		p '****stream_uri'+@stream_uri
+		# p '****stream_uri'+@stream_uri
 		super opts
 	end
 
@@ -85,7 +85,7 @@ class Radiko < Radio
 
 	def convert(tmpfile, recfile)
 		# flvからaacを抽出
-		$stderr.puts "saving audio file..."
+		# $stderr.puts "saving audio file..."
 		raise "not found: #{tmpfile}" unless File.exists? tmpfile
 		`ffmpeg -loglevel quiet -y -i "#{tmpfile}" -acodec copy "#{recfile}"`
 		FileUtils.rm tmpfile
@@ -123,7 +123,7 @@ class Radiko < Radio
 	end
 
 	def get_auth2(url, authtoken, partialkey)
-		pp [url, authtoken, partialkey]
+		# pp [url, authtoken, partialkey]
 		@agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 		res = post url, {}, {
 			'pragma' => 'no-cache',
@@ -134,7 +134,7 @@ class Radiko < Radio
 			'X-Radiko-Authtoken' => authtoken,
 			'X-Radiko-Partialkey' => partialkey,
 		}
-		pp ">>>\n#{res}\n<<<"
+		# pp ">>>\n#{res}\n<<<"
 		res.sub! /\r\n/m, ''
 		areaid = res.split(',')[0]
 	end
