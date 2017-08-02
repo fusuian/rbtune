@@ -43,7 +43,7 @@ class Radio
 		wait = opts[:wait]
 		sec = opts[:sec] || 1800
 		filename = opts[:filename]
-		quiet = opts[:quiet] || !filename
+		quiet = opts[:quiet] 
 		@outdir = opts[:outdir] || '.'
 		dt = opts[:datetime] || DateTime.now
 
