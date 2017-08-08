@@ -9,3 +9,7 @@
 /tmp/
 authkey.png
 player.swf
+*.aac
+*.m4a
+*.wma
+*.gem
