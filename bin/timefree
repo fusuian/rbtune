@@ -37,6 +37,10 @@ rescue
 	exit
 end
 
+# -dがsun,mon,..,satなど曜日指定だと、当日以外は翌日以降を返すので、
+# 未来だったら前の週の日付を求める
+starttime -= 7 if starttime > Date.today
+
 sec = min*60
 
 account = "fusuian@gmail.com"
