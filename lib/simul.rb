@@ -35,7 +35,7 @@ end
 
 
 if $0 == 'lib/simul.rb'
-	channel, min, filename
+	channel, min, filename = ARGV
 	min ||= 30
 	sec = min.to_f*60
 
