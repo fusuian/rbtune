@@ -17,7 +17,6 @@ class TimeFree < RadikoPremium
 		starttime= opts[:from]
 		endtime = starttime + sec/60/60/24
 		filename = opts[:filename]
-		@outdir = opts[:outdir] || '.'
 
 		from = starttime.timefree
 		to   = endtime.timefree

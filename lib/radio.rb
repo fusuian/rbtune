@@ -11,6 +11,12 @@ require "date"
 
 
 class Radio
+	attr_accessor :outdir
+
+	def initialize
+		@outdir = '.'
+	end
+
 	def create_player
 		# rtmpdumpのコマンドラインを生成する(playから呼ばれる)
 	end
@@ -44,7 +50,6 @@ class Radio
 		sec = opts[:sec] || 1800
 		filename = opts[:filename]
 		quiet = opts[:quiet] 
-		@outdir = opts[:outdir] || '.'
 		dt = opts[:datetime] || DateTime.now
 
 		# $stderr.puts "opts: #{opts}"
@@ -106,14 +111,14 @@ class Radio
   end
 
 
-	def make_tmpfile(channel, datetime, outdir = @outdir)
-		File.join outdir, "#{channel}.#{datetime}.#{$$}.tmp"
+	def make_tmpfile(channel, datetime)
+		File.join @outdir, "#{channel}.#{datetime}.#{$$}.tmp"
 		# File.join outdir, "#{$$}.tmp"
 	end
 
 
-	def make_recfile(title, datetime, outdir = @outdir)
-		File.join outdir, "#{title}.#{datetime}.#{ext}"
+	def make_recfile(title, datetime)
+		File.join @outdir, "#{title}.#{datetime}.#{ext}"
 	end
 
 end

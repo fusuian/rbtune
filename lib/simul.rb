@@ -35,7 +35,7 @@ end
 
 
 if $0 == 'lib/simul.rb'
-	channel, min, filename, outdir = ARGV
+	channel, min, filename
 	min ||= 30
 	sec = min.to_f*60
 
@@ -43,7 +43,7 @@ if $0 == 'lib/simul.rb'
 	begin
 		radio.open
 		radio.tune channel
-		radio.play wait: 0, sec: sec, filename: filename, quiet: false, outdir: outdir
+		radio.play wait: 0, sec: sec, filename: filename, quiet: false
 	ensure
 		radio.close
 	end

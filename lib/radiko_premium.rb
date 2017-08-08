@@ -60,7 +60,7 @@ end
 
 
 if $0 == 'lib/radiko_premium.rb'
-	channel, min, filename, outdir = ARGV
+	channel, min, filename = ARGV
 	min ||= 30
 	sec = min.to_f*60
 	account = "fusuian@gmail.com"
@@ -71,7 +71,7 @@ if $0 == 'lib/radiko_premium.rb'
 		radio.login account, password 
 		radio.open
 		radio.tune channel
-		radio.play wait: 0, sec: sec, filename: filename, quiet: false, outdir: outdir
+		radio.play wait: 0, sec: sec, filename: filename, quiet: false
 	ensure
 		radio.close
 	end

@@ -11,7 +11,6 @@ channel = nil
 filename = nil 
 min = 30 
 # path = '/home/pi/radio'
-outdir = '.'
 quiet = false
 wait = 0
 
@@ -38,11 +37,13 @@ raise "Channel #{channel} not found." unless radio_class
 sec = min*30
 
 radio = radio_class.new
+radio.outdir = ENV['RADIODIR'] || '.'
+
 begin
 	radio.login account, password 
 	radio.open
 	radio.tune channel
-	radio.play wait: wait, sec: sec, filename: filename, quiet: quiet, outdir: outdir
+	radio.play wait: wait, sec: sec, filename: filename, quiet: quiet
 
 ensure
 	radio.close
