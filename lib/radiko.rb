@@ -83,16 +83,6 @@ class Radiko < Radio
 	end
 
 
-	def convert(tmpfile, recfile)
-		# flvからaacを抽出
-		# $stderr.puts "saving audio file..."
-		raise "not found: #{tmpfile}" unless File.exists? tmpfile
-		`ffmpeg -loglevel quiet -y -i "#{tmpfile}" -acodec copy "#{recfile}"`
-		FileUtils.rm tmpfile
-	end
-
-
-
 
 	def create_player(channel)
 		rtmp = @stream_uri
@@ -100,6 +90,7 @@ class Radiko < Radio
 		rtmpdump = RtmpDump.new
 		rtmpdump.merge! 'rtmp' => rtmp, 'swfVfy' => playerurl
 		rtmpdump.merge! 'conn' => %Q(S:"" --conn S:""  --conn S:""  --conn S:#{@authtoken})
+		rtmpdump
 	end
 
 
