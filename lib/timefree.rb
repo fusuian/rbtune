@@ -32,7 +32,7 @@ class TimeFree < RadikoPremium
 
 	def create_player(channel)
 		ffmpeg = FFMpeg.new
-		ffmpeg.merge! 'loglevel' => 'fatal', 'n' => ''
+		ffmpeg.merge! 'loglevel' => 'info', 'n' => ''
 		ffmpeg.merge! 'headers' => %Q("X-Radiko-AuthToken: #{@authtoken}")
 		ffmpeg.merge! 'i' => %Q("#{@stream_uri}")
 		ffmpeg.merge! 'vn' => ''
