@@ -15,6 +15,7 @@ radio_classes = [Radiko, RadikoPremium]
 stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
 
 opt = OptionParser.new
+opt.version = Rbradi::VERSION
 opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
 opt.on("-d 録音開始日", "--date") {|v| date=v}
 opt.on("-t 録音開始時刻", "--time") {|v| time=v}

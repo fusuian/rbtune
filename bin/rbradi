@@ -22,6 +22,7 @@ stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
 
 
 opt = OptionParser.new
+opt.version = Rbradi::VERSION
 opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
 opt.on("-t [30]","--time", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-o ファイル名","--output","出力ファイル"){|v| filename = v}
