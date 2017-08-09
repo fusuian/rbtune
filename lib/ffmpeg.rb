@@ -22,7 +22,7 @@ class FFMpeg < Player
 
 
 	def play
-		puts to_s
+		# puts to_s
 		`#{to_s}`
 	end
 
@@ -33,8 +33,8 @@ class FFMpeg < Player
 		if quiet
 			# merge! 'nosound' => ''
 		end
-		pp self
-		puts to_s
+		# pp self
+		# puts to_s
 		`#{to_s}`
 	end
 

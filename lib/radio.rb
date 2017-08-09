@@ -61,7 +61,6 @@ class Radio
 		end
 
 		player = create_player self.class::channels[@channel]
-		# pp player
 		if filename
 			dt = datetime dt
 			tmpfile = make_tmpfile @channel, dt
