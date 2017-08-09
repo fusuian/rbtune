@@ -34,7 +34,7 @@ radio_class = radio_classes.find do |tuner|
 end
 raise "Channel #{channel} not found." unless radio_class
 
-sec = min*30
+sec = min*60
 
 radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
