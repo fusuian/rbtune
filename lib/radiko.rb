@@ -79,7 +79,7 @@ class Radiko < Radio
 
 
 	def ext
-		'aac'
+		'm4a'
 	end
 
 
