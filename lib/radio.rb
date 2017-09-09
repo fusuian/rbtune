@@ -111,7 +111,7 @@ class Radio
 
 
 	def make_tmpfile(channel, datetime)
-		File.join @outdir, "#{channel}.#{datetime}.#{$$}.tmp"
+		File.join @outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 		# File.join outdir, "#{$$}.tmp"
 	end
 

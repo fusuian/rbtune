@@ -26,7 +26,7 @@ class TimeFree < RadikoPremium
 		player = create_player self.class::channels[@channel]
 		dt = datetime starttime
 		recfile = make_recfile filename, dt
-		player.rec recfile, sec
+		player.rec recfile
 	end
 
 

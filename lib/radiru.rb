@@ -2,7 +2,7 @@
 # coding: utf-8
 
 require "radio"
-require "rtmpdump"
+require "ffmpeg"
 
 class Radiru < Radio
 
@@ -11,50 +11,29 @@ class Radiru < Radio
 	end
 
 	def create_player(channel)
-		rtmp = "rtmpe://netradio-#{channel}-flash.nhk.jp"
-		playpath = channel2flash[channel]
-		playerurl= "http://www3.nhk.or.jp/netradio/files/swf/rtmpe.swf"
-		app = "live"
-		rtmpdump = RtmpDump.new
-		rtmpdump.merge! 'rtmp' => rtmp, 'playpath' => playpath, 'swfVfy' => playerurl, 'app' => app
+		ffmpeg = FFMpeg.new
+		ffmpeg.merge! 'loglevel' => 'info', 'n' => ''
+		ffmpeg.merge! 'i' => %Q("#{channel}")
+		ffmpeg.merge! 'vn' => ''
 	end
+
+
+	def play(opts={})
+		raise 'not tuned yet.' unless @channel
+		p "radiru2: ", self.class, self.class::channels
+		super opts
+	end
+
 
 
 	def self.channels
 		{
-			"nhkr1" => 'r1',
-			"nhkr2" => 'r2',
-			"nhkfm" => 'fm',
-
-			"nhkr1[sendai]" => 'hkr1',
-			"nhkfm[sendai]" => 'hkfm',
-
-			"nhkr1[nagoya]" => 'ckr1',
-			"nhkfm[nagoya]" => 'ckfm',
-
-			"nhkr1[osaka]" => 'bkr1',
-			"nhkfm[osaka]" => 'bkfm',
+			"nhkr1" => 'https://nhkradioakr1-i.akamaihd.net/hls/live/511633/1-r1/1-r1-01.m3u8',
+			"nhkr2" => 'https://nhkradioakr2-i.akamaihd.net/hls/live/511929/1-r2/1-r2-01.m3u8',
+			"nhkfm" => 'https://nhkradioakfm-i.akamaihd.net/hls/live/512290/1-fm/1-fm-01.m3u8',
 		}
 	end
 
-
-	def channel2flash
-		{
-		  "fm" => 'NetRadio_FM_flash@63343',
-		  "r1" => 'NetRadio_R1_flash@63346',
-		  "r2" => 'NetRadio_R2_flash@63342',
-
-		  "hkr1" => 'NetRadio_HKR1_flash@108442',
-		  "hkfm" => 'NetRadio_HKFM_flash@108237',
-
-		  "ckr1" => 'NetRadio_CKR1_flash@108234',
-		  "ckfm" => 'NetRadio_CKFM_flash@108235',
-
-		  "bkr1" => 'NetRadio_BKR1_flash@108232',
-		  "bkfm" => 'NetRadio_BKFM_flash@108233',
-
-		}
-	end
 
 end
 

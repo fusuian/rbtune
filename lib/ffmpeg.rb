@@ -1,5 +1,6 @@
 # ffmpeg.rb
 require "player"
+require "systemu"
 
 class FFMpeg < Player
 
@@ -22,20 +23,23 @@ class FFMpeg < Player
 
 
 	def play
-		# puts to_s
-		`#{to_s}`
+		$stderr.puts 'play: '+to_s
+		`#{to_s} -f mp3 pipe:1 | mplayer -`
 	end
 
 
-	def rec(tmpfile, sec, quiet = true)
+	def rec(tmpfile, sec = nil, quiet = true)
 		super
-		merge! 'acodec' => %Q(copy "#{tmpfile}")
-		if quiet
-			# merge! 'nosound' => ''
+		cmd = "#{to_s} #{tmpfile}"
+		$stderr.puts 'rec:' + cmd
+		if sec 
+			systemu cmd do |cid|
+				sleep sec
+				Process.kill :INT, cid
+			end	
+		else
+			`#{cmd}`
 		end
-		# pp self
-		# puts to_s
-		`#{to_s}`
 	end
 
 end

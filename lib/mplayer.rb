@@ -38,11 +38,8 @@ class Mplayer < Player
 		puts to_s
 
 		systemu to_s do |cid|
-			p cid
-			th = Process.detach(cid)
-			p "sleep #{sec}"
 			sleep sec
-			Process.kill 9, cid
+			Process.kill 2, cid
 		end
 	end
 
