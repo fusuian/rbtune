@@ -5,6 +5,7 @@ require "systemu"
 class FFMpeg < Player
 
 	def initialize
+		@mplayer = Mplayer.new('-')
 	end
 
 
@@ -23,7 +24,8 @@ class FFMpeg < Player
 
 
 	def play
-		cmd = "#{to_s} -f mpegts pipe:1 | mplayer -"
+		self['f'] = 'mpegts'
+		cmd = "#{to_s} pipe:1 | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
 		`#{cmd}`
 	end
@@ -35,14 +37,14 @@ class FFMpeg < Player
 		if quiet
 			cmd = "#{to_s} #{tmpfile}"
 		else
-			cmd = "#{to_s} -f mpegts pipe:1 | tee #{tmpfile} | mplayer -"
+			self['f'] = 'mpegts'
+			cmd = "#{to_s} pipe:1 | tee #{tmpfile} | #{@qmplayer}"
 		end
-		# $stderr.puts "rec: #{cmd}: #{sec}"
+		# p "rec: #{cmd}: #{sec}"
 		if sec 
 			systemu cmd do |cid|
-				# p "cid: #{cid}, sleep #{sec}"
 				sleep sec
- 				Process.kill :INT, cid+1
+				Process.kill :INT, cid+1
 			end	
 		else
 			`#{cmd}`
