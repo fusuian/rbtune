@@ -5,6 +5,7 @@ class Mplayer < Player
 
 	def initialize(url)
 		@url=url
+		self['cache'] = 256
 	end
 
 
