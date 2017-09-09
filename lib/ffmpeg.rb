@@ -23,19 +23,26 @@ class FFMpeg < Player
 
 
 	def play
-		$stderr.puts 'play: '+to_s
-		`#{to_s} -f mp3 pipe:1 | mplayer -`
+		cmd = "#{to_s} -f mpegts pipe:1 | mplayer -"
+		$stderr.puts 'play: '+cmd
+		`#{cmd}`
 	end
 
 
+	# secを指定しない場合、時間待ちをしない
 	def rec(tmpfile, sec = nil, quiet = true)
 		super
-		cmd = "#{to_s} #{tmpfile}"
-		$stderr.puts 'rec:' + cmd
+		if quiet
+			cmd = "#{to_s} #{tmpfile}"
+		else
+			cmd = "#{to_s} -f mpegts pipe:1 | tee #{tmpfile} | mplayer -"
+		end
+		# $stderr.puts "rec: #{cmd}: #{sec}"
 		if sec 
 			systemu cmd do |cid|
+				# p "cid: #{cid}, sleep #{sec}"
 				sleep sec
-				Process.kill :INT, cid
+ 				Process.kill :INT, cid+1
 			end	
 		else
 			`#{cmd}`

@@ -7,8 +7,17 @@ require "ffmpeg"
 class Radiru < Radio
 
 	def ext
-		'm4a'
+		'ts'
 	end
+
+	def self.channels
+		{
+			"nhkr1" => 'https://nhkradioakr1-i.akamaihd.net/hls/live/511633/1-r1/1-r1-01.m3u8',
+			"nhkr2" => 'https://nhkradioakr2-i.akamaihd.net/hls/live/511929/1-r2/1-r2-01.m3u8',
+			"nhkfm" => 'https://nhkradioakfm-i.akamaihd.net/hls/live/512290/1-fm/1-fm-01.m3u8',
+		}
+	end
+
 
 	def create_player(channel)
 		ffmpeg = FFMpeg.new
@@ -20,18 +29,7 @@ class Radiru < Radio
 
 	def play(opts={})
 		raise 'not tuned yet.' unless @channel
-		p "radiru2: ", self.class, self.class::channels
 		super opts
-	end
-
-
-
-	def self.channels
-		{
-			"nhkr1" => 'https://nhkradioakr1-i.akamaihd.net/hls/live/511633/1-r1/1-r1-01.m3u8',
-			"nhkr2" => 'https://nhkradioakr2-i.akamaihd.net/hls/live/511929/1-r2/1-r2-01.m3u8',
-			"nhkfm" => 'https://nhkradioakfm-i.akamaihd.net/hls/live/512290/1-fm/1-fm-01.m3u8',
-		}
 	end
 
 
