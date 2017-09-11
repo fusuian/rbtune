@@ -1,8 +1,11 @@
 # ffmpeg.rb
+require "timeout"
+require "open3"
 require "player"
-require "systemu"
+require "mplayer"
 
 class FFMpeg < Player
+	attr_accessor :output
 
 	def initialize
 		@mplayer = Mplayer.new('-')
@@ -19,13 +22,14 @@ class FFMpeg < Player
 
 
 	def to_s
-		%Q(#{command} #{options} )
+		%Q(#{command} #{options} #{@output})
 	end
 
 
 	def play
 		self['f'] = 'mpegts'
-		cmd = "#{to_s} pipe:1 | #{@mplayer}"
+		@output = 'pipe:1'
+		cmd = "#{to_s} | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
 		`#{cmd}`
 	end
@@ -35,17 +39,26 @@ class FFMpeg < Player
 	def rec(tmpfile, sec = nil, quiet = true)
 		super
 		if quiet
-			cmd = "#{to_s} #{tmpfile}"
+			# self['f'] = 'mpegts'
+			@output = tmpfile
+			cmd = to_s
 		else
 			self['f'] = 'mpegts'
-			cmd = "#{to_s} pipe:1 | tee #{tmpfile} | #{@qmplayer}"
+			@output = 'pipe:1'
+			cmd = "#{to_s} | tee #{tmpfile} | #{@mplayer}"
 		end
-		# p "rec: #{cmd}: #{sec}"
+
+		p "rec: #{cmd}"
 		if sec 
-			systemu cmd do |cid|
-				sleep sec
-				Process.kill :INT, cid+1
-			end	
+			stdin, stdout, stderr, wait_thread = Open3.popen3(cmd)
+			begin
+				Timeout.timeout(sec) do
+					wait_thread.join
+			  end
+			rescue Timeout::Error
+				p "timeout"
+				stdin.write 'q'
+			end
 		else
 			`#{cmd}`
 		end
