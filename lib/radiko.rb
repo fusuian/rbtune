@@ -9,6 +9,7 @@ require "rtmpdump"
 class Radiko < Radio
 	
 	def initialize
+		super
 		@playerurl  = "http://radiko.jp/apps/js/flash/myplayer-release.swf"
 		@playerfile = "player.swf"
 		@keyfile    = "authkey.png"

@@ -1,4 +1,6 @@
 # mplayer.rb
+require "timeout"
+require "open3"
 require "player"
 
 class Mplayer < Player
@@ -31,16 +33,20 @@ class Mplayer < Player
 
 	def rec(tmpfile, sec, quiet = true)
 		super
-		merge! 'dumpstream' => '', 'dumpfile' => tmpfile
+		self['dumpstream'] = ''
+		self['dumpfile'] = tmpfile
 		if quiet
-			merge! 'nosound' => ''
+			self['nosound'] = ''
 		end
-		pp self
-		puts to_s
 
-		systemu to_s do |cid|
-			sleep sec
-			Process.kill 2, cid
+		stdin, stdout, stderr, wait_thread = Open3.popen3(to_s)
+		begin
+			Timeout.timeout(sec) do
+				wait_thread.join
+		  end
+		rescue Timeout::Error
+			# p "timeout"
+			stdin.write 'q'
 		end
 	end
 
