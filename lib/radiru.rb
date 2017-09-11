@@ -3,11 +3,15 @@
 
 require "radio"
 require "ffmpeg"
+require "fileutils"
 
 class Radiru < Radio
+	def initialize
+		super
+	end
 
 	def ext
-		'ts'
+		'm4a'
 	end
 
 	def self.channels
@@ -21,9 +25,11 @@ class Radiru < Radio
 
 	def create_player(channel)
 		ffmpeg = FFMpeg.new
-		ffmpeg.merge! 'loglevel' => 'info', 'n' => ''
-		ffmpeg.merge! 'i' => %Q("#{channel}")
-		ffmpeg.merge! 'vn' => ''
+		ffmpeg['loglevel'] = 'info'
+		ffmpeg['n'] = ''	# do not overwrite
+		ffmpeg['vn'] = '' # no video
+		ffmpeg['i'] = channel # input stream
+		ffmpeg
 	end
 
 
@@ -32,6 +38,24 @@ class Radiru < Radio
 		super opts
 	end
 
+
+	def convert(tmpfile, recfile)
+		ffmpeg = FFMpeg.new
+		ffmpeg['i'] = tmpfile
+		ffmpeg.output = recfile
+		# p ffmpeg.to_s
+		puts 'converting...'
+		`#{ffmpeg}`
+		status = $?
+		FileUtils.rm tmpfile if status.success?
+	end
+
+	private
+
+
+	def make_tmpfile(channel, datetime)
+		File.join @outdir, "#{channel}.#{datetime}.#{$$}.ts"
+	end
 
 end
 
