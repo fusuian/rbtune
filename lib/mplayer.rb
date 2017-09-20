@@ -33,10 +33,11 @@ class Mplayer < Player
 
 	def rec(tmpfile, sec, quiet = true)
 		super
+		self['quiet'] = ''			# 画面表示をしない
 		self['dumpstream'] = ''
 		self['dumpfile'] = tmpfile
 		if quiet
-			self['nosound'] = ''
+			self['nosound'] = ''	# 音声を再生しない
 		end
 
 		stdin, stdout, stderr, wait_thread = Open3.popen3(to_s)
