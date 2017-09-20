@@ -8,6 +8,9 @@ class FFMpeg < Player
 	attr_accessor :output
 
 	def initialize
+		self['loglevel'] = 'warning'
+		self['n'] = ''	# do not overwrite
+		self['vn'] = '' # no video
 		@mplayer = Mplayer.new('-')
 	end
 

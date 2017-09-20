@@ -8,6 +8,7 @@ class Mplayer < Player
 	def initialize(url)
 		@url=url
 		self['cache'] = 256
+		self['quiet'] = ''			# 画面表示をしない
 	end
 
 
@@ -33,7 +34,6 @@ class Mplayer < Player
 
 	def rec(tmpfile, sec, quiet = true)
 		super
-		self['quiet'] = ''			# 画面表示をしない
 		self['dumpstream'] = ''
 		self['dumpfile'] = tmpfile
 		if quiet

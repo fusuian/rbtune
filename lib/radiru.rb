@@ -25,9 +25,6 @@ class Radiru < Radio
 
 	def create_player(channel)
 		ffmpeg = FFMpeg.new
-		ffmpeg['loglevel'] = 'info'
-		ffmpeg['n'] = ''	# do not overwrite
-		ffmpeg['vn'] = '' # no video
 		ffmpeg['i'] = channel # input stream
 		ffmpeg
 	end
