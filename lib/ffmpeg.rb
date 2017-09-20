@@ -38,8 +38,8 @@ class FFMpeg < Player
 	# secを指定しない場合、時間待ちをしない
 	def rec(tmpfile, sec = nil, quiet = true)
 		super
+		self['t'] = sec if sec 
 		if quiet
-			# self['f'] = 'mpegts'
 			@output = tmpfile
 			cmd = to_s
 		else
@@ -49,19 +49,7 @@ class FFMpeg < Player
 		end
 
 		p "rec: #{cmd}"
-		if sec 
-			stdin, stdout, stderr, wait_thread = Open3.popen3(cmd)
-			begin
-				Timeout.timeout(sec) do
-					wait_thread.join
-			  end
-			rescue Timeout::Error
-				p "timeout"
-				stdin.write 'q'
-			end
-		else
-			`#{cmd}`
-		end
+		`#{cmd}`
 	end
 
 end

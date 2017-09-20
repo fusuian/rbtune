@@ -11,7 +11,7 @@ class Radiru < Radio
 	end
 
 	def ext
-		'm4a'
+		'ts'
 	end
 
 	def self.channels
@@ -38,17 +38,6 @@ class Radiru < Radio
 		super opts
 	end
 
-
-	def convert(tmpfile, recfile)
-		ffmpeg = FFMpeg.new
-		ffmpeg['i'] = tmpfile
-		ffmpeg.output = recfile
-		# p ffmpeg.to_s
-		puts 'converting...'
-		`#{ffmpeg}`
-		status = $?
-		FileUtils.rm tmpfile if status.success?
-	end
 
 	private
 
