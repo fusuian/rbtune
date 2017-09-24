@@ -31,6 +31,7 @@ class FFMpeg < Player
 
 	def play
 		self['f'] = 'mpegts'
+		self['acodec'] = 'copy'
 		@output = 'pipe:1'
 		cmd = "#{to_s} | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
