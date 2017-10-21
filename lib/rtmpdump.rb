@@ -5,7 +5,8 @@ require "player"
 class RtmpDump < Player
 	def initialize
 		super
-		self.merge! 'live' => '', 'quiet' => ''
+		self['live'] = ''
+		self['quiet'] = ''
 	end
 
 
@@ -22,10 +23,10 @@ class RtmpDump < Player
 
 	def rec(tmpfile, sec, quiet = true)
 		super
-		merge! 'stop' => sec
+		self['stop'] = sec
 
 		if quiet
-			merge! 'flv' => tmpfile
+			self['flv'] = tmpfile
 			# pp to_s
 			`#{to_s}`
 		else
