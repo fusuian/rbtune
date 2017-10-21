@@ -11,6 +11,7 @@ class FFMpeg < Player
 		self['loglevel'] = 'warning'
 		self['n'] = ''	# do not overwrite
 		self['vn'] = '' # no video
+		self['acodec'] = 'copy'
 		@mplayer = Mplayer.new('-')
 	end
 
@@ -31,7 +32,6 @@ class FFMpeg < Player
 
 	def play
 		self['f'] = 'mpegts'
-		self['acodec'] = 'copy'
 		@output = 'pipe:1'
 		cmd = "#{to_s} | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
@@ -41,7 +41,6 @@ class FFMpeg < Player
 
 	# secを指定しない場合、時間待ちをしない
 	def rec(tmpfile, sec = nil, quiet = true)
-		super
 		self['t'] = sec if sec 
 		if quiet
 			@output = tmpfile
