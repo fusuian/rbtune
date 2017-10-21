@@ -86,11 +86,10 @@ class Radiko < Radio
 
 
 	def create_player(channel)
-		rtmp = @stream_uri
-		playerurl= @playerurl
 		rtmpdump = RtmpDump.new
-		rtmpdump.merge! 'rtmp' => rtmp, 'swfVfy' => playerurl
-		rtmpdump.merge! 'conn' => %Q(S:"" --conn S:""  --conn S:""  --conn S:#{@authtoken})
+		rtmpdump['rtmp'] = @stream_uri
+		rtmpdump['swfVfy'] = @playerurl
+		rtmpdump['conn'] = %Q(S:"" --conn S:""  --conn S:""  --conn S:#{@authtoken})
 		rtmpdump
 	end
 
@@ -130,6 +129,12 @@ class Radiko < Radio
 		res.sub! /\r\n/m, ''
 		areaid = res.split(',')[0]
 	end
+
+	def make_tmpfile(channel, datetime)
+		File.join @outdir, "#{channel}.#{datetime}.#{$$}.aac"
+	end
+
+
 end
 
 
