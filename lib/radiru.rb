@@ -24,8 +24,9 @@ class Radiru < Radio
 
 
 	def create_player(channel)
-		ffmpeg = FFMpeg.new
-		ffmpeg['i'] = channel # input stream
+		ffmpeg           = FFMpeg.new
+		ffmpeg['i']      = channel # input stream
+		ffmpeg['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
 		ffmpeg
 	end
 

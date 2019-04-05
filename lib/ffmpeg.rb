@@ -11,7 +11,6 @@ class FFMpeg < Player
 		self['loglevel'] = 'warning'
 		self['n']        = '' # do not overwrite
 		self['vn']       = '' # no video
-		self['acodec']   = 'copy'
 		@mplayer = Mplayer.new('-')
 	end
 

@@ -24,6 +24,7 @@ class TimeFree < RadikoPremium
 		@stream_uri=%Q(https://radiko.jp/v2/api/ts/playlist.m3u8?l=15&station_id=#{@channel}&ft=#{from}&to=#{to})
 		# radio_play datetime: starttime, filename: filename
 		player = create_player self.class::channels[@channel]
+		pp player
 		dt = datetime starttime
 		recfile = make_recfile filename, dt
 		player.rec recfile
@@ -32,9 +33,12 @@ class TimeFree < RadikoPremium
 
 	def create_player(channel)
 		ffmpeg = FFMpeg.new
-		ffmpeg.merge! 'loglevel' => 'info', 'n' => ''
-		ffmpeg.merge! 'headers' => %Q("X-Radiko-AuthToken: #{@authtoken}")
-		ffmpeg.merge! 'i' => %Q("#{@stream_uri}")
-		ffmpeg.merge! 'vn' => ''
+		ffmpeg['loglevel'] = 'info'
+		ffmpeg['n']        = ''
+		ffmpeg['headers']  = %Q("X-Radiko-AuthToken: #{@authtoken}")
+		ffmpeg['i']        = %Q("#{@stream_uri}")
+		ffmpeg['vn']       = ''
+		ffmpeg['acodec']   = 'copy' # acodecオプションはiオプションのあとに置かないとエラー
+		ffmpeg
 	end
 end
