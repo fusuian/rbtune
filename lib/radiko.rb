@@ -37,6 +37,9 @@ class Radiko < Radio
 		  'bayfm' =>    "BAYFM78",
 		  'nack5' =>    "NACK5",
 		  'yokohama' => "YFM",
+
+  		  'housou-daigaku' => "HOUSOU-DAIGAKU",
+  		  'hoso-daigaku' => "HOUSOU-DAIGAKU",
 		}
 	end
 

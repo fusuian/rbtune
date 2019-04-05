@@ -19,7 +19,8 @@ class RadikoPremium < Radiko
 		  'fmoita' =>   "FM_OITA",
 		  'fmniigata' => "FMNIIGATA",
 		  'mbs' => "MBS",
-		  'obc' => "OBC"
+		  'obc' => "OBC",
+		  'fmfuji' => "FM-FUJI",
 		}
 	end
 
