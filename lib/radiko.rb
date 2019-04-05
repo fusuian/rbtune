@@ -20,26 +20,26 @@ class Radiko < Radio
 
 	def self.channels
 		{
-		  'tbs' =>          "TBS",
-		  'bunka' =>        "QRR", 
-		  'nippon_hoso' =>       "LFR", 
-		  'radio_nippon' =>  "JORF", 
-		  'ibaraki_hoso' =>  "IBS",
-
-		  'nikkei1' =>  "RN1",
-		  'nikkei2' =>  "RN2", 
-		  
-		  'interfm' =>  "INT",
-		  'fmtokyo' =>  "FMT", 
-		  'tokyofm' =>  "FMT", 
-		  'tokyo_fm' =>  "FMT", 
-		  'jwave' =>    "FMJ",
-		  'bayfm' =>    "BAYFM78",
-		  'nack5' =>    "NACK5",
-		  'yokohama' => "YFM",
-
-  		  'housou-daigaku' => "HOUSOU-DAIGAKU",
-  		  'hoso-daigaku' => "HOUSOU-DAIGAKU",
+			'tbs'            => "TBS",
+			'bunka'          => "QRR", 
+			'nippon_hoso'    => "LFR", 
+			'radio_nippon'   => "JORF", 
+			'ibaraki_hoso'   => "IBS",
+			
+			'nikkei1'        => "RN1",
+			'nikkei2'        => "RN2", 
+			
+			'interfm'        => "INT",
+			'fmtokyo'        => "FMT", 
+			'tokyofm'        => "FMT", 
+			'tokyo_fm'       => "FMT", 
+			'jwave'          => "FMJ",
+			'bayfm'          => "BAYFM78",
+			'nack5'          => "NACK5",
+			'yokohama'       => "YFM",
+			
+			'housou-daigaku' => "HOUSOU-DAIGAKU",
+			'hoso-daigaku'   => "HOUSOU-DAIGAKU",
 		}
 	end
 
@@ -89,21 +89,21 @@ class Radiko < Radio
 
 
 	def create_player(channel)
-		rtmpdump = RtmpDump.new
-		rtmpdump['rtmp'] = @stream_uri
+		rtmpdump           = RtmpDump.new
+		rtmpdump['rtmp']   = @stream_uri
 		rtmpdump['swfVfy'] = @playerurl
-		rtmpdump['conn'] = %Q(S:"" --conn S:""  --conn S:""  --conn S:#{@authtoken})
+		rtmpdump['conn']   = %Q(S:"" --conn S:""  --conn S:""  --conn S:#{@authtoken})
 		rtmpdump
 	end
 
 
 	def get_auth1(url)
 		s = post url, {}, {
-				'pragma' => 'no-cache',
-				'X-Radiko-App' => 'pc_ts',
+				'pragma'               => 'no-cache',
+				'X-Radiko-App'         => 'pc_ts',
 				'X-Radiko-App-Version' => '4.0.0',
-				'X-Radiko-User' => 'test-stream',
-				'X-Radiko-Device' => 'pc',
+				'X-Radiko-User'        => 'test-stream',
+				'X-Radiko-Device'      => 'pc',
 			}
 		s.sub! /\r\n\r\n.*/m, ''
 		arr = s.split(/\r\n/).map{|s| s.split('=')}.flatten
@@ -120,13 +120,13 @@ class Radiko < Radio
 		# pp [url, authtoken, partialkey]
 		@agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 		res = post url, {}, {
-			'pragma' => 'no-cache',
-			'X-Radiko-App' => 'pc_ts',
+			'pragma'               => 'no-cache',
+			'X-Radiko-App'         => 'pc_ts',
 			'X-Radiko-App-Version' => '4.0.0',
-			'X-Radiko-User' => 'test-stream',
-			'X-Radiko-Device' => 'pc',
-			'X-Radiko-Authtoken' => authtoken,
-			'X-Radiko-Partialkey' => partialkey,
+			'X-Radiko-User'        => 'test-stream',
+			'X-Radiko-Device'      => 'pc',
+			'X-Radiko-Authtoken'   => authtoken,
+			'X-Radiko-Partialkey'  => partialkey,
 		}
 		# pp ">>>\n#{res}\n<<<"
 		res.sub! /\r\n/m, ''

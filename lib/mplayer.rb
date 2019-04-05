@@ -35,7 +35,7 @@ class Mplayer < Player
 	def rec(tmpfile, sec, quiet = true)
 		super
 		self['dumpstream'] = ''
-		self['dumpfile'] = tmpfile
+		self['dumpfile']   = tmpfile
 		if quiet
 			self['nosound'] = ''	# 音声を再生しない
 		end
