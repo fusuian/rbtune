@@ -27,11 +27,11 @@ Gem::Specification.new do |spec|
   end
   # spec.bindir        = "exe"
   # spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
-  spec.executables << 'rbradi' << 'timefree'
+  spec.executables << 'rbradi' << 'timefree' << 'radiru'
   spec.require_paths = ["lib"]
 
   spec.add_dependency "mechanize", "~> 2.7"
-  
+
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "rake", "~> 10.0"
   # spec.add_development_dependency "pry"

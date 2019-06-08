@@ -60,7 +60,7 @@ class Radio
 			sleep wait 
 		end
 
-		player = create_player self.class::channels[@channel]
+		player = create_player self.class::channels[@channel] || @channel
 		if filename
 			dt = datetime dt
 			tmpfile = make_tmpfile @channel, dt
