@@ -21,6 +21,7 @@ class RadikoPremium < Radiko
 			'mbs'       => "MBS",
 			'obc'       => "OBC",
 			'fmfuji'    => "FM-FUJI",
+			'@fm'       => "FMAICHI",
 		}
 	end
 
@@ -69,7 +70,7 @@ if $0 == 'lib/radiko_premium.rb'
 
 	radio = RadikoPremium.new
 	begin
-		radio.login account, password 
+		radio.login account, password
 		radio.open
 		radio.tune channel
 		radio.play wait: 0, sec: sec, filename: filename, quiet: false
