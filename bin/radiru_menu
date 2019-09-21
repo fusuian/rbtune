@@ -7,7 +7,36 @@ require "selenium-webdriver"
 require "optparse"
 require "pp"
 
-uri = "https://www.nhk.or.jp/radio/ondemand/detail.html?p=5832_01"
+uri = "https://www.nhk.or.jp/radio/ondemand/"
+
+$test_mode = false
+$show_program_mode = false
+
+opt = OptionParser.new
+opt.on('-t', '--test') {|v| $test_mode = true}
+opt.on('-s', '--show-programs') {|v| $show_program_mode = true}
+
+def search_program(str, driver)
+  elements = driver.find_elements(:css, 'div#ondemandList a')
+  programs = elements.map { |e|
+    h3, h3span, desc, station = ['h3', 'p', 'p span'].map { |css|
+      begin
+        el = e.find_element(:css, css)
+        el.text
+      rescue Selenium::WebDriver::Error::NoSuchElementError
+        nil
+      end
+    }
+    desc.sub! /#{station}/, '' if station
+    {title: h3, station: station, text: desc, element: e}
+  }
+  if $show_program_mode
+    programs
+  else
+    programs.filter { |prog| prog['title'] =~ /#{str}/ }
+  end
+end
+
 
 def ondemand_url(str, driver)
   elements = driver.find_elements(:css, 'div.progblock li a')
@@ -46,13 +75,45 @@ def ondemand_url(str, driver)
   end
 end
 
+opt.parse! ARGV
+p ARGV
+if $show_program_mode
+  if ARGV.size == 1
+    program = ARGV[0]
+  else
+    opt.parse ['-h']
+    exit 1
+  end
+elsif ARGV.size == 2
+  program, title = ARGV
+else
+  opt.parse ['-h']
+  exit 1
+end
+
 
 begin
   driver = Selenium::WebDriver.for :safari
   driver.navigate.to uri
   wait = Selenium::WebDriver::Wait.new(timeout: 3)
-  pp ondemand_url(ARGV[0], driver)
 
+  programs = search_program program, driver
+  if programs
+    if $show_program_mode
+      programs.filter! {|prog| prog[:title] =~ /#{program}/ }
+      programs.each {|prog| puts prog[:title]}
+    else
+      puts '!!!'
+      pp programs
+      programs.each do |program|
+        pp program
+        program['element'].click
+        wait = Selenium::WebDriver::Wait.new(timeout: 3)
+        sleep 1
+        ondemand_url(title, driver)
+      end
+    end
+  end
 ensure
   driver.quit
 end
