@@ -49,7 +49,7 @@ class Radio
 		wait = opts[:wait] || 0
 		sec = opts[:sec] || 1800
 		filename = opts[:filename]
-		quiet = opts[:quiet] 
+		quiet = opts[:quiet]
 		dt = opts[:datetime] || DateTime.now
 
 		# $stderr.puts "opts: #{opts}"
@@ -57,7 +57,7 @@ class Radio
 
 		if wait > 0
 			$stderr.puts "waiting #{wait} sec..."
-			sleep wait 
+			sleep wait
 		end
 
 		player = create_player self.class::channels[@channel] || @channel
@@ -107,7 +107,7 @@ class Radio
 
 	def datetime(dt)
 		dt.to_s[0..15].gsub(/:/, '=')
-  end
+	end
 
 
 	def make_tmpfile(channel, datetime)
