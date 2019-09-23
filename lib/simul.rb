@@ -1,4 +1,5 @@
-# simul.rb
+#!/usr/bin/env ruby
+
 require "radio"
 require "mplayer"
 
@@ -11,8 +12,9 @@ class Simul < Radio
 			"comiten"     => "mms://st1.shimabara.jp/comiten",
 			"midfm"       => "mmsh://203.141.56.46:80/mid-fm761?MSWMExt=.asf",
 			"rainbowtown" => "mmsh://211.1.40.129:80/rainbowtown?MSWMExt=.asf",
-			"tsukuba"     => "mmsh://211.1.40.21:80/tsukuba?MSWMExt=.asf"
-			# "tsukuba"   => "mms://221.189.124.204/IRTsukuba"
+			"tsukuba"     => "mmsh://211.1.40.21:80/tsukuba?MSWMExt=.asf",
+			"ishinomaki" => "mms://hdv2.nkansai.tv/ishinomaki"
+			# "marine" => "rtmp://mtist.as.smartstream.ne.jp/30061/livestream/playlist.m3u8"
 		}
 	end
 
