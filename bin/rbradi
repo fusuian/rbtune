@@ -17,7 +17,7 @@ wait = 0
 account = "fusuian@gmail.com"
 password =  "raradiko"
 
-radio_classes = [Radiru, Radiko, RadikoPremium, Simul]
+radio_classes = [Radiru, Radiko, RadikoPremium, Simul, ListenRadio]
 stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
 
 
