@@ -22,6 +22,7 @@ class RadikoPremium < Radiko
 			'obc'       => "OBC",
 			'fmfuji'    => "FM-FUJI",
 			'@fm'       => "FMAICHI",
+			'k-mix'     => "K-MIX",
 		}
 	end
 
