@@ -1,0 +1,119 @@
+#!/usr/bin/env ruby
+=begin
+らじる★らじるの聴き逃しにある番組ページURIから、指定したワードを含むタイトルを抜き出し、URIを調べる。
+=end
+
+require "selenium-webdriver"
+require "ffmpeg"
+require "optparse"
+require "pp"
+
+uri = "https://www.nhk.or.jp/radio/ondemand/"
+
+$show_program_mode = false
+
+opt = OptionParser.new
+opt.on('-l', '--list') {|v| $show_program_mode = true}
+
+def search_program(driver)
+  elements = driver.find_elements(:css, 'div#ondemandList a')
+  elements.map { |e|
+    h3, h3span, desc, station = ['h3', 'p', 'p span'].map { |css|
+      begin
+        el = e.find_element(:css, css)
+        el.text
+      rescue Selenium::WebDriver::Error::NoSuchElementError
+        nil
+      end
+    }
+    desc.sub! /#{station}/, '' if station
+    {title: h3, station: station, text: desc, element: e}
+  }
+end
+
+
+def player_property(el, driver)
+  mh = driver.window_handle
+  driver.switch_to.window mh if driver.window_handle != mh
+  element_title = el.find_element(:css, 'h3').text
+  el.find_element(:css, 'a').click
+  wait = Selenium::WebDriver::Wait.new(timeout: 10)
+  wait.until { driver.window_handles.length > 1 && driver.window_handles[1] }
+  handle = driver.window_handles[1]
+  driver.switch_to.window handle
+  wait = Selenium::WebDriver::Wait.new(timeout: 10)
+  wait.until { driver.find_element(:class, 'nol_audio_player').displayed? }
+  player = driver.find_element(:class, 'nol_audio_player')
+  data_aa = player.attribute('data-aa')
+  type, title, station, s, stoe = data_aa.split(';')
+  starttime, endtime = stoe.split('_')
+  prop = {
+    text: element_title,
+    title: title,
+    station: station,
+    start_time: starttime,
+    end_time: endtime,
+    url: player.attribute('data-hlsurl'),
+    aa: data_aa,
+  }
+  driver.close
+  prop
+end
+
+
+def rec(url, filename)
+  ffmpeg           = FFMpeg.new
+  ffmpeg['i']      = url # input stream
+  ffmpeg['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
+  ffmpeg.rec filename
+end
+
+
+opt.parse! ARGV
+p ARGV
+title, episode = ARGV
+
+begin
+  driver = Selenium::WebDriver.for :firefox
+  p 'navigate'
+  driver.navigate.to uri
+  wait = Selenium::WebDriver::Wait.new(timeout: 10)
+  wait.until { driver.find_element(:id, 'ondemand').displayed? }
+  p 'ondemand'
+  programs = search_program driver
+  p programs
+  exit unless programs
+
+  programs.filter! {|prog| prog[:title] =~ /#{title}/ } if title
+  if $show_program_mode
+    programs.each {|prog| puts prog[:title]}
+  else
+    programs.each do |prog|
+      begin
+        pp '== prog', prog
+        # prog[:element].click
+        driver.navigate.to prog[:element].attribute('href')
+        wait = Selenium::WebDriver::Wait.new(timeout: 10)
+        wait.until { driver.find_element(:class_name, 'block') }
+        elements = driver.find_elements(:class_name, 'block')
+        pp '== elements'
+        elements.filter! {|e| e.text =~ /#{episode}/} if episode
+        next if elements.empty?
+        p elements, elements.map { |e| e.text }
+        elements.each do |el|
+          prop = player_property el, driver
+          p prop[:title], prop[:start_time], prop[:url]
+          rec prop[:url], "#{prop[:title]}.mp4"
+        end
+
+      rescue Exception => e
+        p e
+      end
+    end
+  end
+
+rescue Selenium::WebDriver::Error::SessionNotCreatedError
+  $stderr.puts $!
+ensure
+  driver && driver.quit
+end
