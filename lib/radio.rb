@@ -8,7 +8,7 @@
 # radio.close
 
 require "date"
-
+require "benchmark"
 
 class Radio
 	attr_accessor :outdir
@@ -62,10 +62,18 @@ class Radio
 
 		player = create_player self.class::channels[@channel] || @channel
 		if filename
-			dt = datetime dt
-			tmpfile = make_tmpfile @channel, dt
-			player.rec tmpfile, sec, quiet
-			convert tmpfile, make_recfile(filename, dt)
+			rtime = 0
+			s = sec
+			while s > 60 do
+				rtime += Benchmark.realtime do
+					dt = datetime dt
+					tmpfile = make_tmpfile @channel, dt
+					player.rec tmpfile, s, quiet
+					convert tmpfile, make_recfile(filename, dt)
+				end
+				s -= rtime
+				dt = DateTime.now
+			end
 		else
 			player.play
 		end
