@@ -56,7 +56,7 @@ def player_property(el, driver)
     url: player.attribute('data-hlsurl'),
     aa: data_aa,
   }
-  driver.close
+  driver.switch_to.window mh
   prop
 end
 
@@ -70,47 +70,79 @@ def rec(url, filename)
 end
 
 
+# 番組の一覧を表示する
+def list_episode(el)
+  episode = el.find_element(:class, 'title').text
+  summary = el.find_element(:class, 'summary').text
+  d1 = el.find_element(:class, 'd1').text
+  d2 = el.find_element(:class, 'd2').text
+  puts "** #{episode}"
+  puts "    (#{summary})"
+  puts "    #{d1}"
+  puts "    #{d2}"
+  puts
+end
+
+
+def list_episodes(elements)
+  elements.each do |el|
+    list_episode el
+  end
+end
+
+# 番組ページを開いてエピソードのリストを得る
+def episodes_from_program(prog, driver)
+  driver.navigate.to prog[:element].attribute('href')
+  wait = Selenium::WebDriver::Wait.new(timeout: 10)
+  wait.until { driver.find_element(:class_name, 'block') }
+  driver.find_elements(:class_name, 'block')
+end
+
+
+def list_programs(programs)
+  programs.each do |prog|
+    # p prog
+    title = prog[:title].sub(/\n/, ': ')
+    puts "* #{title}"
+  end
+end
+
+
+def rec_episodes(elements, driver)
+  elements.each do |el|
+    prop = player_property el, driver
+    puts "downloading: #{prop[:title]}..."
+    rec prop[:url], "#{prop[:title]}.mp4"
+  end
+end
+
 opt.parse! ARGV
-p ARGV
 title, episode = ARGV
 
 begin
   driver = Selenium::WebDriver.for :firefox
-  p 'navigate'
   driver.navigate.to uri
   wait = Selenium::WebDriver::Wait.new(timeout: 10)
   wait.until { driver.find_element(:id, 'ondemand').displayed? }
-  p 'ondemand'
   programs = search_program driver
-  p programs
   exit unless programs
 
-  programs.filter! {|prog| prog[:title] =~ /#{title}/ } if title
-  if $show_program_mode
-    programs.each {|prog| puts prog[:title]}
-  else
+  if title
+    programs.filter! {|prog| prog[:title] =~ /#{title}/ }
     programs.each do |prog|
-      begin
-        pp '== prog', prog
-        # prog[:element].click
-        driver.navigate.to prog[:element].attribute('href')
-        wait = Selenium::WebDriver::Wait.new(timeout: 10)
-        wait.until { driver.find_element(:class_name, 'block') }
-        elements = driver.find_elements(:class_name, 'block')
-        pp '== elements'
-        elements.filter! {|e| e.text =~ /#{episode}/} if episode
-        next if elements.empty?
-        p elements, elements.map { |e| e.text }
-        elements.each do |el|
-          prop = player_property el, driver
-          p prop[:title], prop[:start_time], prop[:url]
-          rec prop[:url], "#{prop[:title]}.mp4"
-        end
-
-      rescue Exception => e
-        p e
+      puts "* #{prog[:title]}"
+      driver2 = Selenium::WebDriver.for :firefox
+      elements = episodes_from_program prog, driver2
+      elements.filter! {|e| e.text =~ /#{episode}/} if episode
+      if $show_program_mode
+        list_episodes elements
+      else
+        rec_episodes elements, driver2
       end
+      driver2.quit
     end
+  else
+    list_programs programs
   end
 
 rescue Selenium::WebDriver::Error::SessionNotCreatedError
