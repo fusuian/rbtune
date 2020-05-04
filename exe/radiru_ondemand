@@ -71,23 +71,22 @@ def rec(url, filename)
 end
 
 
-# 番組の一覧を表示する
-def list_episode(el)
+# サブタイトル情報を表示する
+def show_episode(el)
   episode = el.find_element(:class, 'title').text
-  summary = el.find_element(:class, 'summary').text
   d1 = el.find_element(:class, 'd1').text
   d2 = el.find_element(:class, 'd2').text
   puts "** #{episode}"
-  puts "    (#{summary})"
   puts "    #{d1}"
   puts "    #{d2}"
   puts
 end
 
 
+# サブタイトルの一覧を表示する
 def list_episodes(elements)
   elements.each do |el|
-    list_episode el
+    show_episode el
   end
 end
 
@@ -96,7 +95,7 @@ def episodes_from_program(prog, driver)
   driver.navigate.to prog[:element].attribute('href')
   wait = Selenium::WebDriver::Wait.new(timeout: 10)
   wait.until { driver.find_element(:class_name, 'block') }
-  driver.find_elements(:class_name, 'block')
+  driver.find_elements(:class_name, 'block li')
 end
 
 
