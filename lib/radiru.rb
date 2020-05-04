@@ -11,7 +11,7 @@ class Radiru < Radio
 	end
 
 	def ext
-		'ts'
+		'm4a'
 	end
 
 	def self.channels
@@ -42,7 +42,7 @@ class Radiru < Radio
 
 	def make_tmpfile(channel, datetime)
     channel = 'radiru' unless Radiru::channels.has_key? channel
-		File.join @outdir, "#{channel}.#{datetime}.#{$$}.ts"
+		File.join @outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 	end
 
 end
