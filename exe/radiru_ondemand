@@ -69,7 +69,7 @@ def rec(url, filename)
   ffmpeg           = FFMpeg.new
   ffmpeg['i']      = url # input stream
   ffmpeg['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
-  ffmpeg.rec filename
+  ffmpeg.rec %Q("#{filename}")
 end
 
 
