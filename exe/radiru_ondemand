@@ -15,6 +15,7 @@ $show_program_mode = false
 opt = OptionParser.new
 opt.on('-l', '--list') {|v| $show_program_mode = true}
 
+# 番組一覧情報を得る
 def search_program(driver)
   elements = driver.find_elements(:css, 'div#ondemandList a')
   elements.map { |e|
@@ -31,7 +32,7 @@ def search_program(driver)
   }
 end
 
-
+# div.block エレメントから番組情報を得る
 def player_property(el, driver)
   mh = driver.window_handle
   driver.switch_to.window mh if driver.window_handle != mh
@@ -41,7 +42,6 @@ def player_property(el, driver)
   wait.until { driver.window_handles.length > 1 && driver.window_handles[1] }
   handle = driver.window_handles[1]
   driver.switch_to.window handle
-  wait = Selenium::WebDriver::Wait.new(timeout: 10)
   wait.until { driver.find_element(:class, 'nol_audio_player').displayed? }
   player = driver.find_element(:class, 'nol_audio_player')
   data_aa = player.attribute('data-aa')
@@ -61,6 +61,7 @@ def player_property(el, driver)
 end
 
 
+# ffmpeg でエピソードをダウンロードする
 def rec(url, filename)
   ffmpeg           = FFMpeg.new
   ffmpeg['i']      = url # input stream
