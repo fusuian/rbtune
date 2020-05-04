@@ -10,10 +10,10 @@ require "pp"
 
 uri = "https://www.nhk.or.jp/radio/ondemand/"
 
-$show_program_mode = false
+$show_program_mode = true
 
 opt = OptionParser.new
-opt.on('-l', '--list') {|v| $show_program_mode = true}
+opt.on('-r', '--rec', 'Download programs') {|v| $show_program_mode = false}
 
 # 番組一覧情報を得る
 def search_program(driver)
