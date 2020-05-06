@@ -13,7 +13,9 @@ class Simul < Radio
 			"midfm"       => "mmsh://simuledge.shibapon.net/mid-fm761",
 			"rainbowtown" => "mmsh://hdv3.nkansai.tv/rainbowtown",
 			"tsukuba"     => "mmsh://hdv4.nkansai.tv/tsukuba",
-			"ishinomaki" => "mms://hdv2.nkansai.tv/ishinomaki"
+			"ishinomaki"  => "mms://hdv2.nkansai.tv/ishinomaki",
+			"fmuu"        => "mmsh://hdv4.nkansai.tv/fmuu", # FMうしくうれしく放送
+			"takahagi"    => "mmsh://hdv4.nkansai.tv/takahagi", # たかはぎFM
 		}
 	end
 
