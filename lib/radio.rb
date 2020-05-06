@@ -9,6 +9,8 @@
 
 require "date"
 require "benchmark"
+require "net/http"
+
 
 class Radio
 	attr_accessor :outdir
@@ -44,6 +46,27 @@ class Radio
 	end
 
 
+	def parse_asx(uri)
+		asx = Net::HTTP::get URI::parse(uri)
+		asx.force_encoding "Shift_JIS"
+		asx.encode! 'utf-8'
+		asx.downcase!
+
+		doc = REXML::Document.new(asx)
+		ref = doc.get_elements('//entry/ref')[0]
+		ref.attribute('href').value
+	end
+
+
+	def channel
+		case
+		when @channel.end_with?('.asx')
+			parse_asx @channel
+		else
+			self.class::channels[@channel] || @channel
+		end
+	end
+
 	def play(opts={})
 		raise 'not tuned yet.' unless @channel
 		wait = opts[:wait] || 0
@@ -60,7 +83,7 @@ class Radio
 			sleep wait
 		end
 
-		player = create_player self.class::channels[@channel] || @channel
+		player = create_player channel
 		if filename
 			rtime = 0
 			s = sec
