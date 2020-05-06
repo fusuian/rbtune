@@ -50,7 +50,7 @@ class Radiko < Radio
 			get_file @playerurl, @playerfile
 		end
 		unless File.exists? @keyfile
-			swfextract @playerfile, @keyfile, '-b 12'
+			swfextract @playerfile, 12, @keyfile
 		end
 
 		# $stderr.puts 'fetching auth1...'
