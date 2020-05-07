@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "rbradi/version"
-require "radiru"
+require "rbradi"
 require "optparse"
 
 channel = nil
@@ -10,23 +10,40 @@ min = 30
 quiet = false
 wait = 0
 
-stations = Radiru::channels.keys
+begin
+  klass = Module.const_get(ARGV.shift)
+  stations = klass::channels.keys
+rescue NameError => e
+  $stderr.puts "1st argument must be one of them: #{Rbradi::RADIO_CLASSES*'|'} "
+  exit 1
+end
+
 opt = OptionParser.new
 opt.version = Rbradi::VERSION
-opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
+opt.banner += <<"EOS"
+ class channel
+
+ class: Radiru|Radiko|RadikoPremium|Simul|ListenRadio
+ channel: #{stations*'|'}
+
+EOS
+# opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
 opt.on("-t [30]","--time", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-o ファイル名","--output","出力ファイル"){|v| filename = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
 opt.parse! ARGV
 
+channel = ARGV[0]
 sec = min.to_f*60
 
-radio = Radiru.new
+radio = klass.new
 begin
   radio.open
   radio.tune channel
   radio.play wait: wait, sec: sec, filename: filename, quiet: quiet
+rescue Interrupt
+  # do nothing
 ensure
   radio.close
 end

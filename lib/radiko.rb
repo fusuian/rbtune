@@ -139,19 +139,3 @@ class Radiko < Radio
 
 
 end
-
-
-if $0 =~ %r(lib/radiko.rb$)
-	channel, min, filename = ARGV
-	min ||= 30
-	sec = min.to_f*60
-
-	radio = Radiko.new
-	begin
-		radio.open
-		radio.tune channel
-		radio.play wait: 0, sec: sec, filename: filename, quiet: false
-	ensure
-		# radio.close
-	end
-end

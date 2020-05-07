@@ -60,22 +60,3 @@ class RadikoPremium < Radiko
 	end
 
 end
-
-
-if $0 == 'lib/radiko_premium.rb'
-	channel, min, filename = ARGV
-	min ||= 30
-	sec = min.to_f*60
-	account = "fusuian@gmail.com"
-	password = "raradiko"
-
-	radio = RadikoPremium.new
-	begin
-		radio.login account, password
-		radio.open
-		radio.tune channel
-		radio.play wait: 0, sec: sec, filename: filename, quiet: false
-	ensure
-		radio.close
-	end
-end
