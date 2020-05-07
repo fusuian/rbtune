@@ -83,7 +83,9 @@ class Radio
 			sleep wait
 		end
 
-		player = create_player channel
+		ch = channel
+		puts "play: #{ch}"
+		player = create_player ch
 		if filename
 			rtime = 0
 			s = sec
