@@ -2,7 +2,7 @@
 # coding: utf-8
 
 require "radio"
-require "ffmpeg"
+require "player/ffmpeg"
 require "fileutils"
 
 class Radiru < Radio

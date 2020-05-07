@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "radio"
-require "mplayer"
+require "player/mplayer"
 
 class Simul < Radio
 

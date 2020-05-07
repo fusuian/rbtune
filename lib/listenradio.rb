@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 =begin
-リスラジまたはJCBAサイマルラジオを受信する	
+リスラジまたはJCBAサイマルラジオを受信する
 =end
 
 
 require "radio"
-require "ffmpeg"
+require "player/ffmpeg"
 
 
 class ListenRadio < Radio
@@ -18,7 +18,7 @@ class ListenRadio < Radio
 				"urara" => "http://musicbird-hls.leanstream.co/musicbird/JCB020.stream/playlist.m3u8"
 			}
 			listenradio.merge jcba
-	end	
+	end
 
 	def ext
 		"mp4"

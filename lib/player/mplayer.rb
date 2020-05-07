@@ -1,7 +1,7 @@
 # mplayer.rb
 require "timeout"
 require "open3"
-require "player"
+require "player/player"
 
 class Mplayer < Player
 

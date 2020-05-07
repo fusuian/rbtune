@@ -1,8 +1,8 @@
 # ffmpeg.rb
 require "timeout"
 require "open3"
-require "player"
-require "mplayer"
+# require "player"
+require "player/mplayer"
 
 class FFMpeg < Player
 	attr_accessor :output
@@ -40,7 +40,7 @@ class FFMpeg < Player
 
 	# secを指定しない場合、時間待ちをしない
 	def rec(tmpfile, sec = nil, quiet = true)
-		self['t'] = sec if sec 
+		self['t'] = sec if sec
 		if quiet
 			@output = tmpfile
 			cmd = to_s

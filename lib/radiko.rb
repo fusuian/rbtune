@@ -3,11 +3,11 @@
 
 require "mechanize"
 require "radio"
-require "rtmpdump"
+require "player/rtmpdump"
 # require "pry"
 
 class Radiko < Radio
-	
+
 	def initialize
 		super
 		@playerurl  = "http://radiko.jp/apps/js/flash/myplayer-release.swf"
@@ -21,23 +21,23 @@ class Radiko < Radio
 	def self.channels
 		{
 			'tbs'            => "TBS",
-			'bunka'          => "QRR", 
-			'nippon_hoso'    => "LFR", 
-			'radio_nippon'   => "JORF", 
+			'bunka'          => "QRR",
+			'nippon_hoso'    => "LFR",
+			'radio_nippon'   => "JORF",
 			'ibaraki_hoso'   => "IBS",
-			
+
 			'nikkei1'        => "RN1",
-			'nikkei2'        => "RN2", 
-			
+			'nikkei2'        => "RN2",
+
 			'interfm'        => "INT",
-			'fmtokyo'        => "FMT", 
-			'tokyofm'        => "FMT", 
-			'tokyo_fm'       => "FMT", 
+			'fmtokyo'        => "FMT",
+			'tokyofm'        => "FMT",
+			'tokyo_fm'       => "FMT",
 			'jwave'          => "FMJ",
 			'bayfm'          => "BAYFM78",
 			'nack5'          => "NACK5",
 			'yokohama'       => "YFM",
-			
+
 			'housou-daigaku' => "HOUSOU-DAIGAKU",
 			'hoso-daigaku'   => "HOUSOU-DAIGAKU",
 		}

@@ -1,5 +1,5 @@
-require "radio"
-require "ffmpeg"
+require "radiko_premium"
+require "player/ffmpeg"
 require "date"
 require "fileutils"
 
