@@ -1,15 +1,14 @@
 #!/usr/bin/env ruby
 
-# require "pry"
-require "rbradi"
+require "timefree"
 require "pp"
 require "optparse"
 
-channel = nil 
-filename = nil 
+channel = nil
+filename = nil
 date = nil
 time = nil
-min = 30 
+min = 30
 
 radio_classes = [Radiko, RadikoPremium]
 stations = radio_classes.map { |radio| radio::channels.keys }.flatten!

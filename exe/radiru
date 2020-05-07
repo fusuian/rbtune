@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 
-require "rbradi"
-include Rbradi
-
+require "rbradi/version"
+require "radiru"
 require "optparse"
 
 channel = nil
