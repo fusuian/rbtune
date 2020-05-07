@@ -11,6 +11,7 @@ require 'swf_ruby'
 require "date"
 require "benchmark"
 require "net/http"
+require "rexml/document"
 
 class Radio
 	attr_accessor :outdir
