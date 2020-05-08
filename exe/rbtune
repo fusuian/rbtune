@@ -17,10 +17,10 @@ wait = 0
 opt = OptionParser.new
 opt.version = Rbradi::VERSION
 opt.banner += <<"EOS"
- band channel
+ site station
 
-    band:    #{Radio::bands*'|'}
-    channel:
+    site:    #{Radio::bands*'|'}
+    station:
 #{Radio::bands.map {|band| %Q(      #{band}: #{band::channels.keys*'|'})} *"\n" }
 
 EOS
@@ -31,22 +31,13 @@ opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
 opt.parse! ARGV
 
-unless ARGV.size == 2
-  $stderr.puts opt.help
-  exit 1
-end
+raise opt.help unless ARGV.size == 2
 klass = Module.const_get(ARGV.shift)
 radio = klass.new
-unless radio.is_a? Radio
-  $stderr.puts "band must be one of them: #{Radio::bands*'|'} "
-  exit 1
-end
+raise "site #{klass} not found." unless radio.is_a? Radio
 
 channel = ARGV.shift
-unless channel && radio.class.channels.include?(channel)
-  $stderr.puts "station must be one of them: #{radio.class.channels.keys*'|'} "
-  exit 1
-end
+raise "station #{channel} not found." unless channel && radio.class.channels.include?(channel)
 
 sec = min.to_f*60
 

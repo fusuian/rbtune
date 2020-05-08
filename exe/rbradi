@@ -34,9 +34,7 @@ opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet =
 opt.parse! ARGV
 
 radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
-unless radio_class
-  raise "Channel #{channel} not found."
-end
+raise "station #{channel} not found." unless radio_class
 
 sec = min*60
 
