@@ -24,9 +24,9 @@ opt.banner += <<"EOS"
 #{Radio::bands.map {|band| %Q(      #{band}: #{band::channels.keys*'|'})} *"\n" }
 
 EOS
-# opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
-opt.on("-t [30]","--time", Float, "録音時間 (分）"){|v| min = v}
-opt.on("-o ファイル名","--output","出力ファイル"){|v| filename = v}
+
+opt.on("-m [30]", "--min", Float, "録音時間 (分）"){|v| min = v}
+opt.on("-o ファイル名", "--output", "出力ファイル"){|v| filename = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
 opt.parse! ARGV
