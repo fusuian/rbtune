@@ -5,7 +5,6 @@ require "pp"
 require "optparse"
 
 channel = nil
-filename = nil
 date = nil
 time = nil
 min = 30
@@ -15,33 +14,39 @@ stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
 
 opt = OptionParser.new
 opt.version = Rbradi::VERSION
-opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
-opt.on("-d 録音開始日", "--date") {|v| date=v}
-opt.on("-t 録音開始時刻", "--time") {|v| time=v}
-opt.on("-m [30]", "--min", Float, "録音時間 (指定なしは、30min)"){|v| min=v}
-opt.on("-o ファイル名", "--output","出力ファイル"){|v| filename=v}
+opt.banner += <<"EOS"
+ station date time min
+
+    station: #{stations*'|'}
+    date:    mm/dd or sun-sat
+    time:    HH:MM
+    min:     minutes
+
+EOS
+opt.on("-o ファイル名", "--output", "出力ファイル [timefree]"){|v| filename=v}
 opt.parse! ARGV
 
-
+raise opt.help unless ARGV.size == 4
+channel = ARGV[0]
 radio_class = radio_classes.find do |radio|
   radio::channels[channel]
 end
 raise "Channel #{channel} not found." unless radio_class
-
+filename = channel
 ch = radio_class::channels[channel]
 
 begin
-	starttime = DateTime.parse("#{date}T#{time}")
+  date, time = ARGV[1,2]
+  starttime = DateTime.parse("#{date}T#{time}")
+  # -dがsun,mon,..,satなど曜日指定だと、当日以外は翌日以降を返すので、
+  # 未来だったら前の週の日付を求める (当日だったらそのまま)
+  starttime -= 7 if starttime > Date.today + 1
 rescue
-	$stderr.puts "Format Error: date #{date} time #{time} "
-	exit
+  raise "Format Error: date #{date} time #{time} "
 end
 
-# -dがsun,mon,..,satなど曜日指定だと、当日以外は翌日以降を返すので、
-# 未来だったら前の週の日付を求める
-# (当日だったらそのまま)
-starttime -= 7 if starttime > Date.today + 1
 
+min = ARGV[3].to_f
 sec = min*60
 
 account = "fusuian@gmail.com"
