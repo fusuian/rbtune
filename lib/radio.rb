@@ -16,6 +16,15 @@ require "rexml/document"
 class Radio
 	attr_accessor :outdir
 
+  def Radio.inherited(subclass)
+    @@bands ||= []
+    @@bands << subclass
+  end
+
+  def self.bands
+    @@bands
+  end
+
 	def initialize
 		@outdir = '.'
 	end

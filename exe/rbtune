@@ -14,21 +14,14 @@ min = 30
 quiet = false
 wait = 0
 
-begin
-  klass = Module.const_get(ARGV.shift)
-  stations = klass::channels.keys
-rescue NameError => e
-  $stderr.puts "1st argument must be one of them: #{Rbradi::RADIO_CLASSES*'|'} "
-  exit 1
-end
-
 opt = OptionParser.new
 opt.version = Rbradi::VERSION
 opt.banner += <<"EOS"
- class channel
+ band channel
 
- class: Radiru|Radiko|RadikoPremium|Simul|ListenRadio
- channel: #{stations*'|'}
+    band:    #{Radio::bands*'|'}
+    channel:
+#{Radio::bands.map {|band| %Q(      #{band}: #{band::channels.keys*'|'})} *"\n" }
 
 EOS
 # opt.on("-c channel_name","--channel", stations*'|'){|v| channel = v}
@@ -38,10 +31,25 @@ opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
 opt.parse! ARGV
 
-channel = ARGV[0]
+unless ARGV.size == 2
+  $stderr.puts opt.help
+  exit 1
+end
+klass = Module.const_get(ARGV.shift)
+radio = klass.new
+unless radio.is_a? Radio
+  $stderr.puts "band must be one of them: #{Radio::bands*'|'} "
+  exit 1
+end
+
+channel = ARGV.shift
+unless channel && radio.class.channels.include?(channel)
+  $stderr.puts "station must be one of them: #{radio.class.channels.keys*'|'} "
+  exit 1
+end
+
 sec = min.to_f*60
 
-radio = klass.new
 begin
   radio.open
   radio.tune channel

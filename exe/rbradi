@@ -21,8 +21,7 @@ wait = 0
 account = "fusuian@gmail.com"
 password =  "raradiko"
 
-radio_classes = [Radiru, Radiko, RadikoPremium, Simul, ListenRadio]
-stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
+stations = Radio.bands.map { |radio| radio::channels.keys }.flatten!
 
 
 opt = OptionParser.new
@@ -34,10 +33,10 @@ opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
 opt.parse! ARGV
 
-radio_class = radio_classes.find do |tuner|
-  tuner::channels[channel]
+radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
+unless radio_class
+  raise "Channel #{channel} not found."
 end
-raise "Channel #{channel} not found." unless radio_class
 
 sec = min*60
 
