@@ -47,6 +47,9 @@ begin
 	radio.tune channel
 	radio.play wait: wait, sec: sec, filename: filename, quiet: quiet
 
+rescue Interrupt
+  # do nothing
+
 ensure
 	radio.close
 end

@@ -53,10 +53,17 @@ account = "fusuian@gmail.com"
 password =  "raradiko"
 
 
-radio=TimeFree.new 
-radio.outdir = ENV['RADIODIR'] || '.'
-radio.login account, password 
-radio.open
-#radio.tune channel
-radio.play channel: ch, from: starttime, sec: sec, filename: filename
-radio.close
+begin
+  radio=TimeFree.new
+  radio.outdir = ENV['RADIODIR'] || '.'
+  radio.login account, password
+  radio.open
+  #radio.tune channel
+  radio.play channel: ch, from: starttime, sec: sec, filename: filename
+
+rescue Interrupt
+  # do nothing
+
+ensure
+  radio.close
+end
