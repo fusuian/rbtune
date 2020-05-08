@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
 
 require "rbradi/version"
-require "rbradi"
+require "radiru"
+require "radiko"
+require "radiko_premium"
+require "simul"
+require "listenradio"
 require "optparse"
 
 channel = nil
