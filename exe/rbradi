@@ -50,20 +50,21 @@ unless ARGV.size == 2
 end
 channel = ARGV[0]
 min     = ARGV[1].to_f
+sec     = min*60
 
 radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
 unless radio_class
 	puts "放送局コード #{channel} は登録されていません"
 	exit 1
 end
-sec = min*60
-
 radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
 
 begin
-	account, password = kc.account
-	radio.login account, password
+	if radio.is_a? RadikoPremium
+		account, password = kc.account
+		radio.login account, password
+	end
 	radio.open
 	radio.tune channel
 	radio.play wait: wait, sec: sec, filename: filename, quiet: quiet
