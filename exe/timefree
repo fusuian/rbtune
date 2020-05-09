@@ -1,13 +1,16 @@
 #!/usr/bin/env ruby
 
 require "timefree"
-require "pp"
+require "keychain"
 require "optparse"
 
-channel = nil
-date = nil
-time = nil
-min = 30
+channel  = nil
+date     = nil
+time     = nil
+min      = 30
+
+account  = nil
+password = nil
 
 radio_classes = [Radiko, RadikoPremium]
 stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
@@ -24,7 +27,18 @@ opt.banner += <<"EOS"
 
 EOS
 opt.on("-o ファイル名", "--output", "出力ファイル [timefree]"){|v| filename=v}
+opt.on("--set-authentication", "ラジコプレミアムの認証情報を登録して終了") { $set_authentication = true }
 opt.parse! ARGV
+
+kc = KeyChain.new("http://radiko.jp")
+if $set_authentication
+  begin
+    kc.query('Please input your Radiko account and password.')
+  rescue RuntimeError => ex
+    $stderr.puts ex
+  end
+  exit
+end
 
 raise opt.help unless ARGV.size == 4
 channel = ARGV[0]
@@ -49,16 +63,13 @@ end
 min = ARGV[3].to_f
 sec = min*60
 
-account = "fusuian@gmail.com"
-password =  "raradiko"
-
 
 begin
   radio=TimeFree.new
   radio.outdir = ENV['RADIODIR'] || '.'
-  radio.login account, password
+  account, password = kc.account
+  res= radio.login account, password
   radio.open
-  #radio.tune channel
   radio.play channel: ch, from: starttime, sec: sec, filename: filename
 
 rescue Interrupt
