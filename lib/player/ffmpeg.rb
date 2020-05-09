@@ -1,7 +1,6 @@
 # ffmpeg.rb
 require "timeout"
 require "open3"
-# require "player"
 require "player/mplayer"
 
 class FFMpeg < Player
@@ -50,8 +49,8 @@ class FFMpeg < Player
 			cmd = "#{to_s} | tee #{tmpfile} | #{@mplayer}"
 		end
 
-		p "rec: #{cmd}"
-		`#{cmd}`
+		puts "rec: #{cmd}"
+		Open3.capture3(cmd)
 	end
 
 end

@@ -99,16 +99,19 @@ class Radio
 		if filename
 			rtime = 0
 			s = sec
+			res = nil
 			while s > 60 do
 				rtime += Benchmark.realtime do
 					dt = datetime dt
 					tmpfile = make_tmpfile @channel, dt
-					player.rec tmpfile, s, quiet
+					res = player.rec tmpfile, s, quiet
+					# p ["*** res", res]
 					convert tmpfile, make_recfile(filename, dt)
 				end
 				s -= rtime
 				dt = DateTime.now
 			end
+			res
 		else
 			player.play
 		end
@@ -170,6 +173,9 @@ class Radio
 	def make_recfile(title, datetime)
 		File.join @outdir, "#{title}.#{datetime}.#{ext}"
 	end
+
+	class HTTPBadRequestException < StandardError; end
+	class HTTPForbiddenException < StandardError; end
 
 end
 

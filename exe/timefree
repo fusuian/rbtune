@@ -72,6 +72,12 @@ begin
   radio.open
   radio.play channel: ch, from: starttime, sec: sec, filename: filename
 
+rescue Radio::HTTPBadRequestException
+  $stderr.puts "HTTPBadRequest: 番組の公開が終了しています"
+
+rescue Radio::HTTPForbiddenException
+  $stderr.puts '認証に失敗しました。--set-authentication オプションで正しいアカウントとパスワードを設定してください'
+
 rescue Interrupt
   # do nothing
 

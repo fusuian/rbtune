@@ -45,10 +45,14 @@ class RadikoPremium < Radiko
 			mail: account, pass: password
 		}
 
-		params = []
-		referer = nil
-		@logged_in = true
-		@agent.get 'https://radiko.jp/ap/member/webapi/member/login/check', params, referer, headers
+		begin
+			params = []
+			referer = nil
+			@logged_in = true
+			@agent.get 'https://radiko.jp/ap/member/webapi/member/login/check', params, referer, headers
+		rescue Mechanize::ResponseCodeError => ex
+			raise HTTPForbiddenException if ex.message.include?('400 => Net::HTTPBadRequest')
+		end
 	end
 
 

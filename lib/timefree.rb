@@ -24,10 +24,15 @@ class TimeFree < RadikoPremium
 		@stream_uri=%Q(https://radiko.jp/v2/api/ts/playlist.m3u8?l=15&station_id=#{@channel}&ft=#{from}&to=#{to})
 		# radio_play datetime: starttime, filename: filename
 		player = create_player self.class::channels[@channel]
-		pp player
 		dt = datetime starttime
 		recfile = make_recfile filename, dt
-		player.rec recfile
+		stdout, stderr, status = player.rec recfile
+		case stderr
+		when /400 Bad Request/
+			raise HTTPBadRequestException
+		when /403 Forbidden/
+			raise HTTPForbiddenException
+		end
 	end
 
 
