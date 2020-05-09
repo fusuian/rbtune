@@ -149,7 +149,7 @@ begin
   end
 
 rescue Selenium::WebDriver::Error::SessionNotCreatedError
-  $stderr.puts $!
+  puts $!
 ensure
   driver && driver.quit
 end

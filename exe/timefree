@@ -35,17 +35,23 @@ if $set_authentication
   begin
     kc.query('Please input your Radiko account and password.')
   rescue RuntimeError => ex
-    $stderr.puts ex
+    puts ex
   end
   exit
 end
 
-raise opt.help unless ARGV.size == 4
+unless ARGV.size == 4
+  puts opt.help
+  exit 1
+end
 channel = ARGV[0]
 radio_class = radio_classes.find do |radio|
   radio::channels[channel]
 end
-raise "Channel #{channel} not found." unless radio_class
+unless radio_class
+  puts "station #{channel} は登録されていません"
+  exit 1
+end
 filename = channel
 ch = radio_class::channels[channel]
 
@@ -56,7 +62,8 @@ begin
   # 未来だったら前の週の日付を求める (当日だったらそのまま)
   starttime -= 7 if starttime > Date.today + 1
 rescue
-  raise "Format Error: date #{date} time #{time} "
+  puts "日時のフォーマットに誤りがあります: date #{date} time #{time}"
+  exit 1
 end
 
 
@@ -73,10 +80,10 @@ begin
   radio.play channel: ch, from: starttime, sec: sec, filename: filename
 
 rescue Radio::HTTPBadRequestException
-  $stderr.puts "HTTPBadRequest: 番組の公開が終了しています"
+  puts "HTTPBadRequest: 番組の公開が終了しています"
 
 rescue Radio::HTTPForbiddenException
-  $stderr.puts '認証に失敗しました。--set-authentication オプションで正しいアカウントとパスワードを設定してください'
+  puts 'ラジコプレミアムの認証に失敗しました。--set-authentication オプションで正しいアカウントとパスワードを設定してください'
 
 rescue Interrupt
   # do nothing
