@@ -13,21 +13,25 @@ require "keychain"
 require "optparse"
 require "pp"
 
-channel  = nil
 filename = nil
-min      = 30
 quiet    = false
 wait     = 0
 
 
 stations = Radio.bands.map { |radio| radio::channels.keys }.flatten!
 
-
 opt = OptionParser.new
 Version = Rbradi::VERSION
-opt.banner += "\n\n日本のラジオ局のサイトから再生（または録音）する\n\n"
-opt.on("-c 放送局コード","--channel", stations*'|'){|v| channel = v}
-opt.on("-t [30]","--time", Float, "録音時間 (分）"){|v| min = v}
+opt.banner += <<EOS
+ station min
+
+		station: #{stations*'|'}
+
+		min:     minutes
+
+ らじる★らじる、ラジコなどの日本のラジオ局のサイトから再生（または録音）する
+
+EOS
 opt.on("-o ファイル名","--output","出力ファイル"){|v| filename = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
@@ -39,6 +43,13 @@ if $set_authentication
 	RadikoPremium::set_authentication kc
 	exit
 end
+
+unless ARGV.size == 2
+	puts opt.help
+	exit 1
+end
+channel = ARGV[0]
+min     = ARGV[1].to_f
 
 radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
 unless radio_class

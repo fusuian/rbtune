@@ -94,7 +94,7 @@ class Radio
 			rtime = 0
 			s = sec
 			res = nil
-			while s > 60 do
+			while s > 0 do
 				rtime += Benchmark.realtime do
 					dt = datetime dt
 					tmpfile = make_tmpfile @channel, dt
