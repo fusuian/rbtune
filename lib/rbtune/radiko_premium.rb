@@ -1,7 +1,7 @@
 #radiko.rb
 # coding: utf-8
 
-require "radiko"
+require "rbtune/radiko"
 
 class RadikoPremium < Radiko
 	def self.channels

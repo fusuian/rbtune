@@ -10,7 +10,7 @@ uri = "https://www.nhk.or.jp/radio/ondemand/"
 $show_program_mode = true
 
 opt = OptionParser.new
-Version = Rbradi::VERSION
+Version = Rbtune::VERSION
 opt.on('-r', '--rec', 'リストした番組を録音する') {|v| $show_program_mode = false}
 opt.banner += <<EOS
  [番組名] [サブタイトル]

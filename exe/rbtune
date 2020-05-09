@@ -2,14 +2,8 @@
 # coding: utf-8
 # 日本のラジオ局のサイトから再生（または録音）する
 
-require "rbradi/version"
-require "radiru"
-require "radiko"
-require "radiko_premium"
-require "simul"
-require "listenradio"
+require "rbtune"
 require "keychain"
-
 require "optparse"
 require "pp"
 
@@ -21,7 +15,7 @@ wait     = 0
 stations = Radio.bands.map { |radio| radio::channels.keys }.flatten!
 
 opt = OptionParser.new
-Version = Rbradi::VERSION
+Version = Rbtune::VERSION
 opt.banner += <<EOS
  station min
 

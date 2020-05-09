@@ -2,7 +2,7 @@
 # coding: utf-8
 
 require "mechanize"
-require "radio"
+require "rbtune/radio"
 require "player/rtmpdump"
 # require "pry"
 

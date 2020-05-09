@@ -1,7 +1,7 @@
 # radiru.rb
 # coding: utf-8
 
-require "radio"
+require "rbtune/radio"
 require "player/ffmpeg"
 require "fileutils"
 

@@ -4,7 +4,7 @@
 =end
 
 
-require "radio"
+require "rbtune/radio"
 require "player/ffmpeg"
 
 

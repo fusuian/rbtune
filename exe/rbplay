@@ -1,17 +1,12 @@
 #!/usr/bin/env ruby
 # ラジオ配信サイトクラスと放送局コードを指定して、ラジオ放送を受信する。
 
-require "rbradi/version"
-require "radiru"
-require "radiko"
-require "radiko_premium"
-require "simul"
-require "listenradio"
+require "rbtune"
 require "keychain"
 require "optparse"
 
 opt = OptionParser.new
-opt.version = Rbradi::VERSION
+opt.version = Rbtune::VERSION
 opt.banner += <<"EOS"
  site station
 

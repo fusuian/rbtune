@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require "radio"
+require "rbtune/radio"
 require "player/mplayer"
 
 class Simul < Radio

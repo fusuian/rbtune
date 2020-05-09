@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # ラジコプレミアムのタイムフリー機能で公開されている番組を録音（ダウンロード）する
 
-require "timefree"
+require "rbtune/timefree"
 require "keychain"
 require "optparse"
 
@@ -17,7 +17,7 @@ radio_classes = [Radiko, RadikoPremium]
 stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
 
 opt = OptionParser.new
-opt.version = Rbradi::VERSION
+opt.version = Rbtune::VERSION
 opt.banner += <<"EOS"
  station date time min
 
