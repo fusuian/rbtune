@@ -34,11 +34,7 @@ opt.parse! ARGV
 
 kc = KeyChain.new("http://radiko.jp")
 if $set_authentication
-	begin
-		kc.query('ラジコプレミアムのアカウントとパスワードを入力してください')
-	rescue RuntimeError => ex
-		puts ex
-	end
+  RadikoPremium::set_authentication kc
 	exit
 end
 

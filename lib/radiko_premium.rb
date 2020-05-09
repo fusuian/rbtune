@@ -27,6 +27,15 @@ class RadikoPremium < Radiko
 	end
 
 
+	def self.set_authentication(kc)
+		begin
+			kc.query('ラジコプレミアムのアカウントとパスワードを入力してください')
+		rescue RuntimeError => ex
+			puts ex
+		end
+	end
+
+
 	def headers
 		{
 			'pragma'           => 'no-cache',
