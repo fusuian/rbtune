@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-
+# らじる★らじるの聴き逃しから、番組名とサブタイトルを指定してリストアップ(またはダウンロード)する
 require "selenium-webdriver"
-require "ffmpeg"
+require "player/ffmpeg"
 require "optparse"
 require "pp"
 
@@ -11,10 +11,15 @@ $show_program_mode = true
 
 opt = OptionParser.new
 Version = Rbradi::VERSION
-opt.on('-r', '--rec', 'Download programs') {|v| $show_program_mode = false}
-opt.banner += ' [program] [episode]'
-opt.banner += "\n\nらじる★らじるの聴き逃しから、番組名とサブタイトルを指定してリストアップ(またはダウンロード)する\n
-"
+opt.on('-r', '--rec', 'リストした番組を録音する') {|v| $show_program_mode = false}
+opt.banner += <<EOS
+ [番組名] [サブタイトル]
+
+ らじる★らじるの聴き逃し (#{uri}) から、番組名とサブタイトルを指定してリストアップ(またはダウンロード)する。
+ 番組名を省略すると、すべての番組をリストする。
+ サブタイトルを省略すると、番組名にマッチした番組のサブタイトルをすべてリストする。
+
+EOS
 
 # 番組一覧情報を得る
 def search_program(driver)

@@ -15,6 +15,8 @@ opt.version = Rbradi::VERSION
 opt.banner += <<"EOS"
  site station
 
+ ラジオ配信サイトクラスと放送局コードを指定して、ラジオ放送を受信する。
+
     sites and stations:
 #{Radio::bands.map {|band| %Q(      #{band}: #{band::channels.keys*'|'})} *"\n" }
 

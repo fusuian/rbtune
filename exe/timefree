@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# ラジコプレミアムのタイムフリー機能で公開されている番組を録音（ダウンロード）する
 
 require "timefree"
 require "keychain"
@@ -20,13 +21,16 @@ opt.version = Rbradi::VERSION
 opt.banner += <<"EOS"
  station date time min
 
+ ラジコプレミアムのタイムフリー機能で公開されている番組を録音（ダウンロード）する
+
     station: #{stations*'|'}
+
     date:    mm/dd or sun-sat
     time:    HH:MM
     min:     minutes
 
 EOS
-opt.on("-o ファイル名", "--output", "出力ファイル [timefree]"){|v| filename=v}
+opt.on("-o ファイル名", "--output", "出力ファイル [放送局コード]"){|v| filename=v}
 opt.on("--set-authentication", "ラジコプレミアムの認証情報を登録して終了") { $set_authentication = true }
 opt.parse! ARGV
 
@@ -54,7 +58,7 @@ ch = radio_class::channels[channel]
 begin
   date, time = ARGV[1,2]
   starttime = DateTime.parse("#{date}T#{time}")
-  # -dがsun,mon,..,satなど曜日指定だと、当日以外は翌日以降を返すので、
+  # date が sun,mon,..,sat など曜日指定だと、当日以外は翌日以降を返すので、
   # 未来だったら前の週の日付を求める (当日だったらそのまま)
   starttime -= 7 if starttime > Date.today + 1
 rescue
@@ -71,7 +75,7 @@ begin
   radio=TimeFree.new
   radio.outdir = ENV['RADIODIR'] || '.'
   account, password = kc.account
-  res= radio.login account, password
+  radio.login account, password
   radio.open
   radio.play channel: ch, from: starttime, sec: sec, filename: filename
 
