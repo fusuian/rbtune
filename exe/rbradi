@@ -7,19 +7,17 @@ require "radiko"
 require "radiko_premium"
 require "simul"
 require "listenradio"
+require "keychain"
 
 require "optparse"
 require "pp"
 
-channel = nil 
-filename = nil 
-min = 30 
-# path = '/home/pi/radio'
-quiet = false
-wait = 0
+channel  = nil
+filename = nil
+min      = 30
+quiet    = false
+wait     = 0
 
-account = "fusuian@gmail.com"
-password =  "raradiko"
 
 stations = Radio.bands.map { |radio| radio::channels.keys }.flatten!
 
@@ -31,10 +29,20 @@ opt.on("-t [30]","--time", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-o ファイル名","--output","出力ファイル"){|v| filename = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
+opt.on("--set-authentication", "ラジコプレミアムの認証情報を登録して終了") { $set_authentication = true }
 opt.parse! ARGV
 
 radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
 raise "station #{channel} not found." unless radio_class
+kc = KeyChain.new("http://radiko.jp")
+if $set_authentication
+	begin
+		kc.query('ラジコプレミアムのアカウントとパスワードを入力してください')
+	rescue RuntimeError => ex
+		$stderr.puts ex
+	end
+	exit
+end
 
 sec = min*60
 
@@ -42,13 +50,17 @@ radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
 
 begin
-	radio.login account, password 
+	account, password = kc.account
+	radio.login account, password
 	radio.open
 	radio.tune channel
 	radio.play wait: wait, sec: sec, filename: filename, quiet: quiet
 
+rescue Radio::HTTPForbiddenException
+	$stderr.puts 'ラジコプレミアムの認証に失敗しました。--set-authentication オプションで正しいアカウントとパスワードを設定してください'
+
 rescue Interrupt
-  # do nothing
+	# do nothing
 
 ensure
 	radio.close
