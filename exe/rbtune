@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# ラジオ配信サイトクラスと放送局コードを指定して、ラジオ放送を受信する。
 
 require "rbradi/version"
 require "radiru"
@@ -6,47 +7,53 @@ require "radiko"
 require "radiko_premium"
 require "simul"
 require "listenradio"
+require "keychain"
 require "optparse"
-
-channel = nil
-filename = nil
-min = 30
-quiet = false
-wait = 0
 
 opt = OptionParser.new
 opt.version = Rbradi::VERSION
 opt.banner += <<"EOS"
  site station
 
-    site:    #{Radio::bands*'|'}
-    station:
+    sites and stations:
 #{Radio::bands.map {|band| %Q(      #{band}: #{band::channels.keys*'|'})} *"\n" }
 
 EOS
 
-opt.on("-m [30]", "--min", Float, "録音時間 (分）"){|v| min = v}
-opt.on("-o ファイル名", "--output", "出力ファイル"){|v| filename = v}
-opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
-opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
 opt.parse! ARGV
-
-raise opt.help unless ARGV.size == 2
+unless ARGV.size == 2
+  puts opt.help
+  exit 1
+end
 klass = Module.const_get(ARGV.shift)
 radio = klass.new
-raise "site #{klass} not found." unless radio.is_a? Radio
+unless radio.is_a? Radio
+  puts "site #{klass} は正しくありません"
+  exit 1
+end
 
 channel = ARGV.shift
-raise "station #{channel} not found." unless channel && radio.class.channels.include?(channel)
-
-sec = min.to_f*60
+unless channel && radio.class.channels.include?(channel)
+  puts "放送局コード #{channel} は登録されていません"
+  exit 1
+end
 
 begin
+  if radio.is_a? RadikoPremium
+    kc = KeyChain.new("http://radiko.jp")
+    account, password = kc.account
+    radio.login account, password
+  end
   radio.open
   radio.tune channel
-  radio.play wait: wait, sec: sec, filename: filename, quiet: quiet
+  radio.play
+
+rescue Radio::HTTPForbiddenException
+  puts 'ラジコプレミアムの認証に失敗しました。--set-authentication オプションで正しいアカウントとパスワードを設定してください'
+
 rescue Interrupt
   # do nothing
+
 ensure
   radio.close
 end
