@@ -9,7 +9,6 @@ class FFMpeg < Player
 	def initialize
 		self['loglevel'] = 'warning'
 		self['n']        = '' # do not overwrite
-		self['vn']       = '' # no video
 		@mplayer = Mplayer.new('-')
 	end
 
@@ -24,7 +23,8 @@ class FFMpeg < Player
 
 
 	def to_s
-		%Q(#{command} #{options} #{@output})
+		# novideoオプション -vn は、この位置でないと機能しない
+		%Q(#{command} #{options} -vn #{@output})
 	end
 
 
@@ -34,6 +34,7 @@ class FFMpeg < Player
 		cmd = "#{to_s} | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
 		`#{cmd}`
+		raise $? unless $?.success
 	end
 
 
@@ -50,7 +51,7 @@ class FFMpeg < Player
 		end
 
 		puts "rec: #{cmd}"
-		Open3.capture3(cmd)
+		stdout, stderr, status = Open3.capture3(cmd)
 	end
 
 end
