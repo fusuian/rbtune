@@ -2,6 +2,7 @@
 # らじる★らじるの聴き逃しから、番組名とサブタイトルを指定してリストアップ(またはダウンロード)する
 require "selenium-webdriver"
 require "player/ffmpeg"
+require "rbtune/radiru"
 require "optparse"
 require "pp"
 
@@ -11,7 +12,8 @@ $show_program_mode = true
 
 opt = OptionParser.new
 Version = Rbtune::VERSION
-opt.on('-r', '--rec', 'リストした番組を録音する') {|v| $show_program_mode = false}
+opt.on('-r', '--record', 'リストした番組を録音する') {$show_program_mode = false}
+opt.on('-o FILE', '--output FILE', '録音するファイル名を指定する') {|v| $recfile = v}
 opt.banner += <<EOS
  [番組名] [サブタイトル]
 
@@ -117,11 +119,15 @@ end
 
 
 # サブタイトルを録音する
-def rec_episodes(elements, driver)
+def rec_episodes(elements, driver, output=nil)
+  radio = Radiru.new
   elements.each do |el|
     prop = player_property el, driver
-    puts "downloading: #{prop[:title]}..."
-    rec prop[:url], "#{prop[:title]}.mp4"
+    title = output || prop[:title].sub(/[[:blank:]].*/, '')
+    title = "#{title}-#{prop[:text]}" if prop.has_key? :text
+    recfile = radio.make_recfile(title, radio.datetime(prop[:start_time]))
+    puts "downloading: #{prop[:title]} to #{recfile}"
+    rec prop[:url], recfile
   end
 end
 
@@ -145,7 +151,7 @@ begin
       if $show_program_mode
         list_episodes elements
       else
-        rec_episodes elements, driver2
+        rec_episodes elements, driver2, output=$recfile
       end
       driver2.quit
     end

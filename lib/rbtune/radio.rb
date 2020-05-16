@@ -120,8 +120,6 @@ class Radio
 	end
 
 
-	private
-
 	def get_file(url, file=nil)
 		content = @agent.get_file(url)
 		File.open(file, "wb") { |fout| fout.write content } if file
