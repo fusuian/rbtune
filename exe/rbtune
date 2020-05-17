@@ -12,7 +12,8 @@ min      = 30
 quiet    = false
 wait     = 0
 
-account  = nil
+account         = nil
+prefecture      = nil
 
 stations = Radio.bands.map { |radio| radio::channels.keys }.flatten!
 
@@ -21,17 +22,17 @@ Version = Rbtune::VERSION
 opt.banner += <<EOS
  station min
 
-		station: #{stations*'|'}
+    station: #{stations*'|'}
 
     min:     minutes
 
  らじる★らじる、ラジコなどの日本のラジオ局のサイトから再生（または録音）する
 
 EOS
-opt.on("-o ファイル名","--output","出力ファイル"){|v| filename = v}
+opt.on("-o ファイル名","--output","録音するファイル名"){|v| filename = v}
 opt.on("-m [30]", "--min", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
-opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
+opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
 opt.parse! ARGV
 
@@ -50,8 +51,8 @@ channel = ARGV[0]
 
 radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
 unless radio_class
-	puts "放送局コード #{channel} は登録されていません"
-	exit 1
+  puts "放送局コード #{channel} は登録されていません"
+  exit 1
 end
 radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
@@ -69,8 +70,8 @@ rescue Radio::HTTPForbiddenException
   puts 'ラジコプレミアムの認証に失敗しました。--set-account オプションで正しいアカウントとパスワードを設定してください'
 
 rescue Interrupt
-	# do nothing
+  # do nothing
 
 ensure
-	radio.close
+  radio.close
 end
