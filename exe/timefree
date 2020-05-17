@@ -10,9 +10,6 @@ date     = nil
 time     = nil
 min      = 30
 
-account  = nil
-password = nil
-
 radio_classes = [Radiko, RadikoPremium]
 stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
 
@@ -31,14 +28,9 @@ opt.banner += <<"EOS"
 
 EOS
 opt.on("-o ファイル名", "--output", "出力ファイル [放送局コード]"){|v| filename=v}
-opt.on("--set-authentication", "ラジコプレミアムの認証情報を登録して終了") { $set_authentication = true }
 opt.parse! ARGV
 
 kc = KeyChain.new("http://radiko.jp")
-if $set_authentication
-  RadikoPremium::set_authentication kc
-  exit
-end
 
 unless ARGV.size == 4
   puts opt.help
@@ -83,7 +75,7 @@ rescue Radio::HTTPBadRequestException
   puts "HTTPBadRequest: 番組の公開が終了しています"
 
 rescue Radio::HTTPForbiddenException
-  puts 'ラジコプレミアムの認証に失敗しました。--set-authentication オプションで正しいアカウントとパスワードを設定してください'
+  puts 'ラジコプレミアムの認証に失敗しました。rdtune コマンドの --set-account オプションで正しいアカウントとパスワードを設定してください'
 
 rescue Interrupt
   # do nothing
