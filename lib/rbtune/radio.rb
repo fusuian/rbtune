@@ -71,15 +71,8 @@ class Radio
 		end
 	end
 
-	def play(opts={})
+	def record(filename, sec, wait: 0, quiet: false, dt: DateTime.now)
 		raise 'not tuned yet.' unless @channel
-		wait = opts[:wait] || 0
-		sec = opts[:sec] || 1800
-		filename = opts[:filename]
-		quiet = opts[:quiet]
-		dt = opts[:datetime] || DateTime.now
-
-		# $stderr.puts "opts: #{opts}"
 		# $stderr.puts "play: #{sec}, #{filename}, #{quiet}, #{wait}"
 
 		if wait > 0
@@ -90,29 +83,31 @@ class Radio
 		ch = channel
 		puts "play: #{ch}"
 		player = create_player ch
-		if filename
-			rtime = 0
-			s = sec
-			res = nil
-			while s > 0 do
-				rtime += Benchmark.realtime do
-					dt = datetime dt
-					tmpfile = make_tmpfile @channel, dt
-					res = player.rec tmpfile, s, quiet
-					# p ["*** res", res]
-					convert tmpfile, make_recfile(filename, dt)
-				end
-				s -= rtime
-				dt = DateTime.now
+
+		rtime = 0
+		s     = sec
+		res   = nil
+		while s > 0 do
+			rtime += Benchmark.realtime do
+				dt = datetime dt
+				tmpfile = make_tmpfile @channel, dt
+				res = player.rec tmpfile, s, quiet
+				# p ["*** res", res]
+				convert tmpfile, make_recfile(filename, dt)
 			end
-			res
-		else
-			player.play
+			s -= rtime
+			dt = DateTime.now
 		end
+		res
 	end
 
-	alias :radio_play :play
 
+	def play
+		ch = channel
+		raise 'not tuned yet.' unless ch
+		puts "play: #{ch}"
+		create_player(ch).play
+	end
 
 
 	def convert(tmpfile, recfile)

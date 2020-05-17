@@ -68,18 +68,13 @@ class Radiko < Radio
 		@areaid = get_auth2 'https://radiko.jp/v2/api/auth2_fms', @authtoken, @partialkey
 	end
 
+  def tune(ch)
+    super
+    # $stderr.puts "fetching #{channel}.xml..."
+    xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
+    @stream_uri = xml.at('//url/item').text
+  end
 
-	def play(opts={})
-		# p '***play'
-		raise 'not tuned yet.' unless @channel
-		# pp class::channels
-		channel = self.class::channels[@channel]
-		# $stderr.puts "fetching #{channel}.xml..."
-		xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
-		@stream_uri = xml.at('//url/item').text
-		# p '****stream_uri'+@stream_uri
-		super opts
-	end
 
 
 	def ext

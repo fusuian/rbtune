@@ -6,9 +6,6 @@ require "player/ffmpeg"
 require "fileutils"
 
 class Radiru < Radio
-	def initialize
-		super
-	end
 
 	def ext
 		'm4a'
@@ -31,14 +28,8 @@ class Radiru < Radio
 	end
 
 
-	def play(opts={})
-		raise 'not tuned yet.' unless @channel
-		super opts
-	end
-
-
 	def make_tmpfile(channel, datetime)
-    channel = 'radiru' unless Radiru::channels.has_key? channel
+		channel = 'radiru' unless Radiru::channels.has_key? channel
 		File.join @outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 	end
 

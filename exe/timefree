@@ -69,7 +69,8 @@ begin
   account, password = kc.account
   radio.login account, password
   radio.open
-  radio.play channel: ch, from: starttime, sec: sec, filename: filename
+  radio.tune ch
+  radio.record filename, starttime, sec
 
 rescue Radio::HTTPBadRequestException
   puts "HTTPBadRequest: 番組の公開が終了しています"

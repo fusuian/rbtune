@@ -58,12 +58,17 @@ radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
 
 begin
-	radio.open
-	radio.tune channel
-	radio.play wait: wait, sec: sec, filename: filename, quiet: quiet
   if radio.is_a? RadikoPremium
     account, password = kc.account
     radio.login account, password
+  end
+  radio.open
+  radio.tune channel
+  if filename
+    sec = min*60
+    radio.record filename, sec, wait: wait, quiet: quiet
+  else
+    radio.play
   end
 
 rescue Radio::HTTPForbiddenException
