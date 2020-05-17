@@ -8,6 +8,7 @@ require "optparse"
 require "pp"
 
 filename = nil
+min      = 30
 quiet    = false
 wait     = 0
 
@@ -22,12 +23,13 @@ opt.banner += <<EOS
 
 		station: #{stations*'|'}
 
-		min:     minutes
+    min:     minutes
 
  らじる★らじる、ラジコなどの日本のラジオ局のサイトから再生（または録音）する
 
 EOS
 opt.on("-o ファイル名","--output","出力ファイル"){|v| filename = v}
+opt.on("-m [30]", "--min", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時の同時再生を行わない" ) {|v| quiet = true}
 opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
@@ -40,13 +42,11 @@ if account
 end
 end
 
-unless ARGV.size == 2
-	puts opt.help
-	exit 1
+unless ARGV.size == 1
+  puts opt.help
+  exit 1
 end
 channel = ARGV[0]
-min     = ARGV[1].to_f
-sec     = min*60
 
 radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
 unless radio_class
