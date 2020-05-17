@@ -27,9 +27,9 @@ class RadikoPremium < Radiko
 	end
 
 
-	def self.set_authentication(kc)
+	def self.set_authentication(kc, account)
 		begin
-			kc.query('ラジコプレミアムのアカウントとパスワードを入力してください')
+			kc.query('ラジコプレミアムのパスワードを入力してください', account)
 		rescue RuntimeError => ex
 			puts ex
 		end

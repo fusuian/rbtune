@@ -29,18 +29,14 @@ class KeyChain
   end
 
 
-  def query(prompt)
+  def query(prompt, account)
     old_account, old_password = account()
     puts prompt
-    print "  アカウント (#{old_account}) : "
-    STDOUT.flush
-    new_account = gets.chomp
-    new_account = old_account if new_account.empty?
-    print '  パスワード : '
+    print '  password : '
     STDOUT.flush
     new_password = STDIN.noecho(&:gets).chomp
     puts
     raise "空のパスワードは無効です (何も変更されません)" if new_password.empty?
-    set new_account, new_password
+    set account, new_password
   end
 end
