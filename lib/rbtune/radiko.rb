@@ -4,7 +4,7 @@
 require "mechanize"
 require "rbtune/radio"
 require "player/rtmpdump"
-# require "pry"
+
 
 class Radiko < Radio
 
@@ -19,28 +19,9 @@ class Radiko < Radio
 	attr_reader :agent
 
 	def self.channels
-		{
-			'tbs'            => "TBS",
-			'bunka'          => "QRR",
-			'nippon_hoso'    => "LFR",
-			'radio_nippon'   => "JORF",
-			'ibaraki_hoso'   => "IBS",
-
-			'nikkei1'        => "RN1",
-			'nikkei2'        => "RN2",
-
-			'interfm'        => "INT",
-			'fmtokyo'        => "FMT",
-			'tokyofm'        => "FMT",
-			'tokyo_fm'       => "FMT",
-			'jwave'          => "FMJ",
-			'bayfm'          => "BAYFM78",
-			'nack5'          => "NACK5",
-			'yokohama'       => "YFM",
-
-			'housou-daigaku' => "HOUSOU-DAIGAKU",
-			'hoso-daigaku'   => "HOUSOU-DAIGAKU",
-		}
+    @rp ||= RadikoPrefecture.new
+    @db ||= @rp.load
+    @db[:stations]
 	end
 
 

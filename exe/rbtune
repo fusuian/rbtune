@@ -3,6 +3,7 @@
 # 日本のラジオ局のサイトから再生（または録音）する
 
 require "rbtune"
+require "rbtune/radiko_prefecture"
 require "keychain"
 require "optparse"
 require "pp"
@@ -14,8 +15,18 @@ wait     = 0
 
 account         = nil
 prefecture      = nil
+$set_prefecture = false
 
-stations = Radio.bands.map { |radio| radio::channels.keys }.flatten!
+stations = Radio.bands.map { |radio|
+  begin
+    chs = radio::channels
+    chs && chs.keys
+  rescue PStore::Error
+    $stderr.puts "WARNING! ラジコの放送局情報が登録されていません。rbtune --fetch-prefecture または rbtune --set-prefecture (県名) を実行してください"
+    []
+  end
+}.flatten!
+
 
 opt = OptionParser.new
 Version = Rbtune::VERSION
@@ -34,13 +45,45 @@ opt.on("-m [30]", "--min", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
+opt.on("--set-prefecture [PREFECTURE]", "ラジコの県域情報を設定して終了") {|v|
+  $set_prefecture = true
+  prefecture = v
+}
+opt.on("--fetch-prefecture", "ラジコの県域情報を取得して終了") {
+  $set_prefecture = true
+}
+opt.on("--show-prefecture", "ラジコの県域情報を表示して終了") {
+  $show_prefecture = true
+}
 opt.parse! ARGV
 
 kc = KeyChain.new("http://radiko.jp")
-if account
+case
+when account
   RadikoPremium::set_authentication kc, account
   exit
-end
+
+when $set_prefecture
+  begin
+    rp = RadikoPrefecture.new
+    prefecture ||= rp.fetch_my_region
+    area = rp.prefecture_to_area(prefecture)
+    rp.save area
+    puts "#{prefecture} (#{area}) を登録しました"
+    exit
+  rescue RuntimeError
+    $stderr.puts $!
+    exit 1
+  end
+
+when $show_prefecture
+  rp = RadikoPrefecture.new
+  db = rp.load
+  puts db[:region]
+  pp db[:stations].keys
+  puts ' --- '
+  pp db[:all_stations].keys
+  exit
 end
 
 unless ARGV.size == 1

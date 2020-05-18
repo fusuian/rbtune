@@ -5,25 +5,9 @@ require "rbtune/radiko"
 
 class RadikoPremium < Radiko
 	def self.channels
-		{
-			'cbc'       => "CBC",
-			'hbc'       => "HBC",
-			'fmgunma'   => "FMGUNMA",
-			'fmgumma'   => "FMGUNMA",
-			'fmnagano'  => "FMN",
-			'fmmie'     => "FMMIE",
-			'tokai'     => "TOKAIRADIO",
-			'fm802'     => "802",
-			'rfc'       => "RFC",
-			'rab'       => "RAB",
-			'fmoita'    => "FM_OITA",
-			'fmniigata' => "FMNIIGATA",
-			'mbs'       => "MBS",
-			'obc'       => "OBC",
-			'fmfuji'    => "FM-FUJI",
-			'@fm'       => "FMAICHI",
-			'k-mix'     => "K-MIX",
-		}
+    @rp ||= RadikoPrefecture.new
+    @db ||= @rp.load
+    @db[:all_stations]
 	end
 
 
