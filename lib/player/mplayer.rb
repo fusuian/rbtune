@@ -7,8 +7,9 @@ class Mplayer < Player
 
 	def initialize(url)
 		@url=url
-		self['cache'] = 32
-		self['quiet'] = ''			# 画面表示をしない
+		self['cache']     = 256
+		self['cache-min'] = 16
+		self['quiet']     = ''      # 画面表示をしない
 	end
 
 
@@ -44,7 +45,7 @@ class Mplayer < Player
 		begin
 			Timeout.timeout(sec) do
 				wait_thread.join
-		  end
+			end
 		rescue Timeout::Error
 			# p "timeout"
 			stdin.write 'q'
