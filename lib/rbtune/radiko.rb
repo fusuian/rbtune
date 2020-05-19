@@ -3,6 +3,7 @@
 
 require "mechanize"
 require "rbtune/radio"
+require "rbtune/radiko_prefecture"
 require "player/rtmpdump"
 
 

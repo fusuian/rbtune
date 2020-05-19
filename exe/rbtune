@@ -3,7 +3,6 @@
 # 日本のラジオ局のサイトから再生（または録音）する
 
 require "rbtune"
-require "rbtune/radiko_prefecture"
 require "keychain"
 require "optparse"
 require "pp"
