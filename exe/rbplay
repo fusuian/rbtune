@@ -30,10 +30,6 @@ unless radio.is_a? Radio
 end
 
 channel = ARGV.shift
-unless channel && radio.class.channels.include?(channel)
-  puts "放送局コード #{channel} は登録されていません"
-  exit 1
-end
 
 begin
   if radio.is_a? RadikoPremium
