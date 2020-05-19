@@ -50,25 +50,8 @@ class Radio
 	end
 
 
-	def parse_asx(uri)
-		asx = Net::HTTP::get URI::parse(uri)
-		asx.force_encoding "Shift_JIS"
-		asx.encode! 'utf-8'
-		asx.downcase!
-
-		doc = REXML::Document.new(asx)
-		ref = doc.get_elements('//entry/ref')[0]
-		ref.attribute('href').value
-	end
-
-
 	def channel
-		case
-		when @channel.end_with?('.asx')
-			parse_asx @channel
-		else
-			self.class::channels[@channel] || @channel
-		end
+		self.class::channels[@channel] || @channel
 	end
 
 	def record(filename, sec, wait: 0, quiet: false, dt: DateTime.now)

@@ -25,6 +25,30 @@ class Simul < Radio
 	end
 
 
+	def channel
+		ch = super
+		if ch.end_with?('.asx')
+			parse_asx ch
+		else
+			ch
+		end
+	end
+
+
+	def parse_asx(uri)
+		asx = Net::HTTP::get URI::parse(uri)
+		asx.force_encoding "Shift_JIS"
+		asx.encode! 'utf-8'
+		asx.downcase!
+		if asx.gsub!(%r(</ask>), '</asx>')
+			$stderr.puts 'fix!! </ask> to <asx>'
+		end
+		doc = REXML::Document.new(asx)
+		ref = doc.get_elements('//entry/ref')[0]
+		ref.attribute('href').value
+	end
+
+
 	def create_player(channel)
 		# ch = channels[channel]
 		# raise "wrong channel: #{channel} " unless ch
