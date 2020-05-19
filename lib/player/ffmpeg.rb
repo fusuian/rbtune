@@ -34,7 +34,7 @@ class FFMpeg < Player
 		cmd = "#{to_s} | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
 		`#{cmd}`
-		raise $? unless $?.success
+		raise $? unless $?.success?
 	end
 
 
