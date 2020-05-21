@@ -21,6 +21,12 @@ class Radio
 		@@bands << subclass
 	end
 
+	def self.channels
+		@@db ||= Station::pstore_db
+		@stations ||= @@db.transaction(true) { @@db[name] }
+		@channels ||= @stations.map {|st| [st.id, st.uri]}.to_h
+	end
+
 	def self.bands
 		@@bands
 	end

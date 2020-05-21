@@ -6,13 +6,6 @@ require "rbtune/station"
 
 class Simul < Radio
 
-	def self.channels
-		@@db ||= Station::pstore_db
-		@@stations ||= @@db.transaction(true) { @@db['simulradio'] }
-		@@channels ||= @@stations.map {|st| [st.id, st.uri]}.to_h
-	end
-
-
 	def ext
 		'wma'
 	end

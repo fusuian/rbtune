@@ -20,9 +20,14 @@ class Radiko < Radio
 	attr_reader :agent
 
 	def self.channels
-    @rp ||= RadikoPrefecture.new
-    @db ||= @rp.load
-    @db[:stations]
+    begin
+      @rp ||= RadikoPrefecture.new
+      @db ||= @rp.load
+      @db[:stations]
+
+    rescue PStore::Error
+      {}
+    end
 	end
 
 
