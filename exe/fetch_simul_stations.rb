@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 =begin
 サイマルラジオのサイト http://www.simulradio.info から放送局一覧を取得する。
 listenradioのリンクやプレイヤーが開く局は除く。
@@ -24,52 +25,53 @@ FMひらかた: http://www.media-gather.jp/_mg_standard/deliverer2.php?p=IaxEXCg
 =end
 
 require "rbtune/station"
+require "rbtune/simul"
+require "rbtune/listenradio"
+require "rbtune/jcba"
 require "mechanize"
 require "pstore"
+require "optparse"
 
-@agent = Mechanize.new
-uri = 'http://www.simulradio.info'
+fetch = false
 
-def link_to_station_id(link)
-  link =~ %r{(/asx/([\w-]+).asx|nkansai.tv/(\w+)/?\Z|(flower|redswave|fm-tanba|darazfm|AmamiFM|comiten|fm-shimabara|fm-kitaq))}
-  id = ($2 || $3 || $4).sub(/fm[-_]/, 'fm').sub(/[-_]fm/, 'fm')
+opt = OptionParser.new
+opt.version = Rbtune::VERSION
+opt.banner += <<"EOS"
+ RadioClass
+
+ RadioClass : ListenRadio, Jcba, Simul
+
+クラス別の放送局リストを表示する。
+
+EOS
+opt.on("-f", "--fetch", "ネットから放送局リストを取得する" ) {fetch = true}
+
+opt.parse! ARGV
+unless ARGV.size == 1
+	puts opt.help
+	exit 1
+end
+
+klass = Module.const_get(ARGV.shift)
+radio = klass.new
+unless radio.is_a? Radio
+	puts "site #{klass} は正しくありません"
+	exit 1
 end
 
 
-def fetch_stations(uri)
-  stations = []
-  body = @agent.get uri
-  radioboxes = body / 'div.radiobox'
-  array = radioboxes.map do |station|
-    rows = station / 'tr'
-    cols = rows[1] / 'td'
-    ankers = station / 'a'
-
-    player = ankers.select {|a|
-      img = a.at 'img'
-      img && img['alt'] == '放送を聴く'
-    }
-
-    title = station.at('td > p > strong > a').text.strip
-    links0 = player.map! {|e| e['href']}
-    links = links0.filter { |uri| uri =~ %r{\.asx\Z|nkansai.tv} }
-    if links.empty?
-      # $stderr.puts "#{title}: #{links0 * ', '}"
-    else
-      link = links[0]
-      id = link_to_station_id(link)
-      if id
-        stations << Station.new(id, link, name: title, ascii_name: id)
-      else
-        $stderr.puts "!!! #{title}: #{link}"
-      end
-    end
-  end
-  stations
-end
-
-stations = fetch_stations uri
 db = Station::pstore_db
-db.transaction do
-  db['simulradio'] = stations
+name = radio.class.name
+if fetch
+	$stderr.puts "fetching #{name} stations..."
+	agent = Mechanize.new
+	body = agent.get radio.stations_uri
+	$stderr.puts "parsing..."
+	stations = radio.parse_stations body
+	$stderr.puts "OK"
+	db.transaction { db[name] = stations }
+else
+	stations = db.transaction(true) { db[name] }
 end
+
+stations.each { |station| puts station }
