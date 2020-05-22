@@ -4,12 +4,6 @@
 require "rbtune/radiko"
 
 class RadikoPremium < Radiko
-	def self.channels
-    @rp ||= RadikoPrefecture.new
-    @db ||= @rp.load
-    @db[:all_stations]
-	end
-
 
 	def self.set_authentication(kc, account)
 		begin
@@ -55,5 +49,11 @@ class RadikoPremium < Radiko
 		@agent.get 'https://radiko.jp/ap/member/webapi/member/logout', params, referer, headers
 		@logged_in = false
 	end
+
+	def stations_uri
+		"http://radiko.jp/v3/station/region/full.xml"
+	end
+
+
 
 end

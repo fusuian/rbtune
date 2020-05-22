@@ -25,9 +25,7 @@ FMひらかた: http://www.media-gather.jp/_mg_standard/deliverer2.php?p=IaxEXCg
 =end
 
 require "rbtune/station"
-require "rbtune/simul"
-require "rbtune/listenradio"
-require "rbtune/jcba"
+require "rbtune"
 require "mechanize"
 require "pstore"
 require "optparse"

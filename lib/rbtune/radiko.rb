@@ -19,17 +19,6 @@ class Radiko < Radio
 
 	attr_reader :agent
 
-	def self.channels
-    begin
-      @rp ||= RadikoPrefecture.new
-      @db ||= @rp.load
-      @db[:stations]
-
-    rescue PStore::Error
-      {}
-    end
-	end
-
 
 	def open
 		unless File.exists? @playerfile
@@ -55,12 +44,12 @@ class Radiko < Radio
 		@areaid = get_auth2 'https://radiko.jp/v2/api/auth2_fms', @authtoken, @partialkey
 	end
 
-  def tune(ch)
-    super
-    # $stderr.puts "fetching #{channel}.xml..."
-    xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
-    @stream_uri = xml.at('//url/item').text
-  end
+	def tune(ch)
+		super
+		# $stderr.puts "fetching #{channel}.xml..."
+		xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
+		@stream_uri = xml.at('//url/item').text
+	end
 
 
 
@@ -124,5 +113,18 @@ class Radiko < Radio
 	def stations_uri
 		"http://radiko.jp/v3/station/list/#{RadikoPrefecture.prefecture}.xml"
 	end
+
+
+	def parse_stations(body)
+		stations = body.search '//station'
+		stations.map do |station|
+			id         = station.at('id').text
+			name       = station.at('name').text
+			uri        = id
+			ascii_name = station.at('ascii_name').text
+			Station.new(id, uri, name: name, ascii_name: ascii_name)
+		end
+	end
+
 
 end

@@ -24,6 +24,7 @@ class Radio
 	def self.channels
 		@@db ||= Station::pstore_db
 		@stations ||= @@db.transaction(true) { @@db[name] }
+		return {} unless @stations
 		@channels ||= @stations.map {|st| [st.id, st.uri]}.to_h
 	end
 
