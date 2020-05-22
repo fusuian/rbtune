@@ -120,4 +120,9 @@ class Radiko < Radio
 	end
 
 
+
+	def stations_uri
+		"http://radiko.jp/v3/station/list/#{RadikoPrefecture.prefecture}.xml"
+	end
+
 end

@@ -59,16 +59,13 @@ opt.parse! ARGV
 kc = KeyChain.new("http://radiko.jp")
 case
 when account
-  RadikoPremium::set_authentication kc, account
+  RadikoPremium.set_authentication kc, account
   exit
 
 when $set_prefecture
   begin
-    rp = RadikoPrefecture.new
-    prefecture ||= rp.fetch_my_region
-    area = rp.prefecture_to_area(prefecture)
-    rp.save area
-    puts "#{prefecture} (#{area}) を登録しました"
+    RadikoPrefecture.prefecture = prefecture
+    puts "#{prefecture} #{RadikoPrefecture.prefecture} を登録しました"
     exit
   rescue RuntimeError
     $stderr.puts $!
@@ -76,12 +73,7 @@ when $set_prefecture
   end
 
 when $show_prefecture
-  rp = RadikoPrefecture.new
-  db = rp.load
-  puts db[:region]
-  pp db[:stations].keys
-  puts ' --- '
-  pp db[:all_stations].keys
+  puts RadikoPrefecture.prefecture
   exit
 end
 
