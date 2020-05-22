@@ -30,6 +30,7 @@ require "mechanize"
 require "pstore"
 require "optparse"
 
+all   = false
 fetch = false
 
 opt = OptionParser.new
@@ -42,9 +43,21 @@ opt.banner += <<"EOS"
 クラス別の放送局リストを表示する。
 
 EOS
+opt.on("-a", "--all", "全放送局リストを表示する" ) {all = true}
 opt.on("-f", "--fetch", "ネットから放送局リストを取得する" ) {fetch = true}
 
 opt.parse! ARGV
+
+if all
+	db = Station::pstore_db
+	db.transaction(true) do
+		%w(Simul ListenRadio Jcba).each do |name|
+			db[name].each { |station| puts station }
+		end
+	end
+	exit
+end
+
 unless ARGV.size == 1
 	puts opt.help
 	exit 1
