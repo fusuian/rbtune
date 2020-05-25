@@ -12,15 +12,27 @@ class Station
   def initialize(id, uri, name: '', ascii_name: '', description: '')
     @id          = id.downcase
     @uri         = uri
-    @name        = name
+    @name        = normalize_name name
     @ascii_name  = ascii_name
     @description = description
   end
 
+
+  def normalize_name(name)
+    name.strip
+    .sub(/[ -]?FM[ -]?/i, 'FM')
+    .sub(/fm|ＦＭ|エフエム|えふえむ/, 'FM')
+    # .sub(/[(（].*?[）)]/, '')
+    .tr('　！＠', ' !@')
+  end
+
   def inspect
-    "#{id}: '#{name}' [#{ascii_name}] --> #{uri}"
+    "#{name}: #{id}: '#{name}' [#{ascii_name}]"
   end
 
 
-  alias :to_s :inspect
+  def to_s
+    "#{id}:\t\t#{name}"
+  end
+
 end
