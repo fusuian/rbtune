@@ -9,24 +9,28 @@ require "player/rtmpdump"
 
 class Radiko < Radio
 
-	def initialize
-		super
-		@playerurl  = "http://radiko.jp/apps/js/flash/myplayer-release.swf"
-		@playerfile = "player.swf"
-		@keyfile    = "authkey.png"
-		@agent = Mechanize.new
+	def playerurl
+		"http://radiko.jp/apps/js/flash/myplayer-release.swf"
 	end
 
-	attr_reader :agent
+
+	def playerfile
+		"player.swf"
+	end
+
+
+	def keyfile
+		"authkey.png"
+	end
 
 
 	def open
-		unless File.exists? @playerfile
+		unless File.exists? playerfile
 			$stderr.puts 'fetching player...'
-			get_file @playerurl, @playerfile
+			get_file playerurl, playerfile
 		end
-		unless File.exists? @keyfile
-			swfextract @playerfile, 12, @keyfile
+		unless File.exists? keyfile
+			swfextract playerfile, 12, keyfile
 		end
 
 		# $stderr.puts 'fetching auth1...'
@@ -37,7 +41,7 @@ class Radiko < Radio
 		length = auth1['X-Radiko-KeyLength'].to_i
 		# pp [@authtoken, offset, length]
 		# binding.pry unless @authtoken
-		@partialkey = get_partialkey @keyfile, offset, length
+		@partialkey = get_partialkey keyfile, offset, length
 
 		# $stderr.puts 'fetching auth2...'
 		# pp [@authtoken, @partialkey]
@@ -58,11 +62,10 @@ class Radiko < Radio
 	end
 
 
-
 	def create_player(uri)
 		rtmpdump           = RtmpDump.new
-		rtmpdump['rtmp']   = @stream_uri
-		rtmpdump['swfVfy'] = @playerurl
+		rtmpdump['rtmp']   = uri
+		rtmpdump['swfVfy'] = playerurl
 		rtmpdump['conn']   = %Q(S:"" --conn S:""  --conn S:""  --conn S:#{@authtoken})
 		rtmpdump
 	end
