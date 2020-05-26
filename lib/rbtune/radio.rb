@@ -7,7 +7,6 @@
 # radio.play
 # radio.close
 
-require 'swf_ruby'
 require "date"
 require "benchmark"
 require "net/http"
@@ -124,38 +123,6 @@ class Radio
 
 	def convert(tmpfile, recfile)
 		FileUtils.mv tmpfile, recfile
-	end
-
-
-	def get_file(url, file=nil)
-		content = @agent.get_file(url)
-		File.open(file, "wb") { |fout| fout.write content } if file
-		content
-	end
-
-	def get(url)
-		@agent.get(url)
-	end
-
-
-	def post(url, query={}, header={})
-		res = @agent.post(url, query, header)
-		res.body
-	end
-
-
-	def swfextract(swffile, character_id, out_file)
-		swf = SwfRuby::SwfDumper.new
-		swf.open(swffile)
-		swf.tags.each_with_index do |tag, i|
-			tag = swf.tags[i]
-			if tag.character_id && tag.character_id == character_id
-				offset = swf.tags_addresses[i]
-				len = tag.length
-				File.open(out_file, 'wb') { |out| out.print tag.data[6..-1] }
-				break
-			end
-		end
 	end
 
 

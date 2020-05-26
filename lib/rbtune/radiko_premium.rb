@@ -28,7 +28,7 @@ class RadikoPremium < Radiko
 
 
 	def login(account, password)
-		res = @agent.post 'https://radiko.jp/ap/member/login/login', {
+		res = agent.post 'https://radiko.jp/ap/member/login/login', {
 			mail: account, pass: password
 		}
 
@@ -36,7 +36,7 @@ class RadikoPremium < Radiko
 			params = []
 			referer = nil
 			@logged_in = true
-			@agent.get 'https://radiko.jp/ap/member/webapi/member/login/check', params, referer, headers
+			agent.get 'https://radiko.jp/ap/member/webapi/member/login/check', params, referer, headers
 		rescue Mechanize::ResponseCodeError => ex
 			raise HTTPForbiddenException if ex.message.include?('400 => Net::HTTPBadRequest')
 		end
@@ -46,7 +46,7 @@ class RadikoPremium < Radiko
 	def close
 		params = []
 		referer = nil
-		@agent.get 'https://radiko.jp/ap/member/webapi/member/logout', params, referer, headers
+		agent.get 'https://radiko.jp/ap/member/webapi/member/logout', params, referer, headers
 		@logged_in = false
 	end
 
