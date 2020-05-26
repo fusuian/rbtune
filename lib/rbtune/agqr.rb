@@ -15,9 +15,9 @@ class Agqr < Radio
 
   def ext; 'm4a'; end
 
-  def create_player(channels)
+  def create_player(uri)
     rtmpdump           = RtmpDump.new
-    rtmpdump['rtmp']   = "rtmp://fms-base1.mitene.ad.jp/agqr/aandg1"
+    rtmpdump['rtmp']   = uri
     rtmpdump
   end
 

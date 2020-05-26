@@ -15,9 +15,9 @@ class ListenRadio < Radio
 		"mp4"
 	end
 
-	def create_player(channel)
+	def create_player(uri)
 		player = FFMpeg.new
-		player['i']      = channel # input stream
+		player['i']      = uri     # input stream
 		player['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
 		player
 	end

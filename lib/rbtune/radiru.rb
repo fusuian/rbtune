@@ -12,9 +12,9 @@ class Radiru < Radio
 	end
 
 
-	def create_player(channel)
+	def create_player(uri)
 		ffmpeg           = FFMpeg.new
-		ffmpeg['i']      = channel # input stream
+		ffmpeg['i']      = uri # input stream
 		ffmpeg['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
 		ffmpeg
 	end
@@ -39,15 +39,14 @@ class Radiru < Radio
       'fm'=> "FM",
     }
     stations.map do |station|
-      areajp         = station.at('areajp').text
-      area         = station.at('area').text
+      areajp = station.at('areajp').text
+      area   = station.at('area').text
       r1, r2, fm = %w(r1 r2 fm).map do |v|
         hls = "#{v}hls"
-        id = "nhk#{v}-#{area}".upcase
-        id.sub! /-TOKYO/, ''
-        uri = station.at(hls).text
-        name       = "NHK#{stationsjp[v]}（#{areajp}）"
-        Station.new(id, uri, name: name)
+        id  = "nhk#{v}-#{area}".upcase
+        uri  = station.at(hls).text
+        name = "NHK#{stationsjp[v]}（#{areajp}）"
+        Station.new(id, uri, name: name, ascii_name: id)
       end
     end.flatten
   end

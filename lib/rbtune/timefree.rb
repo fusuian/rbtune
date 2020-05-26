@@ -35,7 +35,7 @@ class TimeFree < RadikoPremium
 	end
 
 
-	def create_player(channel)
+	def create_player(uri)
 		ffmpeg = FFMpeg.new
 		ffmpeg['loglevel'] = 'info'
 		ffmpeg['headers']  = %Q("X-Radiko-AuthToken: #{@authtoken}")

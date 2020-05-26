@@ -58,7 +58,7 @@ class Radio
 		@outdir = '.'
 	end
 
-	def create_player
+	def create_player(uri)
 		# rtmpdumpのコマンドラインを生成する(playから呼ばれる)
 	end
 
@@ -92,9 +92,9 @@ class Radio
 			sleep wait
 		end
 
-		ch = channel
-		puts "play: #{ch}"
-		player = create_player ch
+		uri = channel
+		puts "play: #{uri}"
+		player = create_player uri
 
 		rtime = 0
 		s     = sec

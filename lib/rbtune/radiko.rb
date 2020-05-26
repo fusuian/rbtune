@@ -59,7 +59,7 @@ class Radiko < Radio
 
 
 
-	def create_player(channel)
+	def create_player(uri)
 		rtmpdump           = RtmpDump.new
 		rtmpdump['rtmp']   = @stream_uri
 		rtmpdump['swfVfy'] = @playerurl

@@ -35,8 +35,8 @@ class Simul < Radio
 	end
 
 
-	def create_player(channel)
-		mplayer = Mplayer.new channel
+	def create_player(uri)
+		mplayer = Mplayer.new uri
 		mplayer.merge! 'benchmark' => '',	'vo' => 'null'
 		mplayer
 	end
