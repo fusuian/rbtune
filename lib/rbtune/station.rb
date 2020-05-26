@@ -10,7 +10,7 @@ class Station
   end
 
   def initialize(id, uri, name: '', ascii_name: '', description: '')
-    @id          = id
+    @id          = id.upcase
     @uri         = uri
     @name        = normalize_name name
     @ascii_name  = ascii_name

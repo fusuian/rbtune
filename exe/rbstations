@@ -51,10 +51,12 @@ opt.parse! ARGV
 if all
 	db = Station::pstore_db
 	db.transaction(true) do
-		%w(Radiko RadikoPremium Simul ListenRadio Jcba).each do |name|
+		Radio.bands.each do |radio|
+			name = radio.to_s
 			puts "* #{name}"
-			db[name].each { |station| puts "    #{station}" }
-			puts '---'
+			stations = (db.root? name)? db[name] : radio.stations
+			stations.each { |station| puts "    #{station}" }
+			puts ''
 		end
 	end
 	exit

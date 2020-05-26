@@ -31,9 +31,9 @@ class Radio
 
 
 	def self.channels
-		return {} unless self.stations
 		@channels ||= self.stations.map {|st| [st.id, st.uri]}.to_h
 	end
+
 
 	def self.bands
 		@@bands
@@ -46,12 +46,12 @@ class Radio
 
 
 	def self.match(channel)
-		ch = channel.upcase
 		Radio.bands.each do |tuner|
 			next unless tuner.stations
-			found = tuner.stations.find { |station| station.name.include?(ch) || station.ascii_name.include?(ch) }
+			found = tuner.stations.find { |station| station.name.match?(/#{channel}/i) || station.ascii_name.match?(/#{channel}/i) }
 			return [tuner, found] if found
 		end
+		nil
 	end
 
 	def initialize

@@ -6,12 +6,12 @@ require "player/ffmpeg"
 require "fileutils"
 
 class Agqr < Radio
-  def self.channels
-    {
-      'agqr'  => 'agqr',
-      'aandg' => 'agqr'
-    }
+
+  def self.stations
+    uri = "rtmp://fms-base1.mitene.ad.jp/agqr/aandg1"
+    [Station.new('AGQR', uri, name: '超A&G+', ascii_name: 'aandg1')]
   end
+
 
   def ext; 'm4a'; end
 

@@ -81,12 +81,13 @@ unless ARGV.size == 1
   puts opt.help
   exit 1
 end
-channel = ARGV[0]
+channel = ARGV[0].upcase
 
 radio_class = Radio.find channel
 unless radio_class
   radio_class, station = Radio.match channel
   if radio_class
+    puts "station: #{station.name}"
     channel = station.id
   else
     puts "放送局コード #{channel} は登録されていません"
