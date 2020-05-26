@@ -10,7 +10,7 @@ class Station
   end
 
   def initialize(id, uri, name: '', ascii_name: '', description: '')
-    @id          = id.downcase
+    @id          = id
     @uri         = uri
     @name        = normalize_name name
     @ascii_name  = ascii_name
@@ -26,13 +26,14 @@ class Station
     .tr('　！＠', ' !@')
   end
 
-  def inspect
-    "#{name}: #{id}: '#{name}' [#{ascii_name}]"
+  def to_s
+    "#{id}:\t\t#{name}\t\t#{ascii_name}"
   end
 
+  alias :inspect :to_s
 
-  def to_s
-    "#{id}:\t\t#{name}"
+  def ==(other)
+    id == other.id
   end
 
 end
