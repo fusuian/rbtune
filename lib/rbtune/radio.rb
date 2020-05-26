@@ -78,12 +78,15 @@ class Radio
 	end
 
 
-	def channel
+	def channel_to_uri
 		self.class::channels[@channel] || @channel
 	end
 
+
 	def record(filename, sec, wait: 0, quiet: false, dt: DateTime.now)
-		raise 'not tuned yet.' unless @channel
+		uri = channel_to_uri
+		raise 'not tuned yet.' unless uri
+		puts "play: #{uri}"
 		# $stderr.puts "play: #{sec}, #{filename}, #{quiet}, #{wait}"
 
 		if wait > 0
@@ -91,8 +94,6 @@ class Radio
 			sleep wait
 		end
 
-		uri = channel
-		puts "play: #{uri}"
 		player = create_player uri
 
 		rtime = 0
@@ -114,10 +115,10 @@ class Radio
 
 
 	def play
-		ch = channel
-		raise 'not tuned yet.' unless ch
-		puts "play: #{ch}"
-		create_player(ch).play
+		uri = channel_to_uri
+		raise 'not tuned yet.' unless uri
+		puts "play: #{uri}"
+		create_player(uri).play
 	end
 
 

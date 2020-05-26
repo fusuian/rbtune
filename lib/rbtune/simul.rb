@@ -11,7 +11,7 @@ class Simul < Radio
 	end
 
 
-	def channel
+	def channel_to_uri
 		ch = super
 		if ch.end_with?('.asx')
 			parse_asx ch

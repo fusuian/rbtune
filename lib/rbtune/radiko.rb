@@ -49,13 +49,11 @@ class Radiko < Radio
 		@areaid = get_auth2 'https://radiko.jp/v2/api/auth2_fms', @authtoken, @partialkey
 	end
 
-	def tune(ch)
-		super
-		# $stderr.puts "fetching #{channel}.xml..."
-		xml = get "http://radiko.jp/v2/station/stream/#{channel}.xml"
-		@stream_uri = xml.at('//url/item').text
-	end
 
+	def channel_to_uri
+		xml = agent.get "http://radiko.jp/v2/station/stream/#{@channel}.xml"
+		xml.at('//url/item').text
+	end
 
 
 	def ext
