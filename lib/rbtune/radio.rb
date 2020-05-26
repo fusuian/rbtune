@@ -21,15 +21,37 @@ class Radio
 		@@bands << subclass
 	end
 
-	def self.channels
+	def self.db
 		@@db ||= Station::pstore_db
-		@stations ||= @@db.transaction(true) { @@db[name] }
-		return {} unless @stations
-		@channels ||= @stations.map {|st| [st.id, st.uri]}.to_h
+	end
+
+	def self.stations
+		@stations ||= self.db.transaction(true) { self.db[name] }
+	end
+
+
+	def self.channels
+		return {} unless self.stations
+		@channels ||= self.stations.map {|st| [st.id, st.uri]}.to_h
 	end
 
 	def self.bands
 		@@bands
+	end
+
+
+	def self.find(channel)
+		Radio.bands.find { |tuner| tuner::channels[channel] }
+	end
+
+
+	def self.match(channel)
+		ch = channel.upcase
+		Radio.bands.each do |tuner|
+			next unless tuner.stations
+			found = tuner.stations.find { |station| station.name.include?(ch) || station.ascii_name.include?(ch) }
+			return [tuner, found] if found
+		end
 	end
 
 	def initialize

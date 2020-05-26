@@ -83,10 +83,15 @@ unless ARGV.size == 1
 end
 channel = ARGV[0]
 
-radio_class = Radio.bands.find { |tuner| tuner::channels[channel] }
+radio_class = Radio.find channel
 unless radio_class
-  puts "放送局コード #{channel} は登録されていません"
-  exit 1
+  radio_class, station = Radio.match channel
+  if radio_class
+    channel = station.id
+  else
+    puts "放送局コード #{channel} は登録されていません"
+    exit 1
+  end
 end
 radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
