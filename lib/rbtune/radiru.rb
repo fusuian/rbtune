@@ -11,14 +11,6 @@ class Radiru < Radio
 		'm4a'
 	end
 
-	def self.channels
-		{
-			"nhkr1" => 'https://nhkradioakr1-i.akamaihd.net/hls/live/511633/1-r1/1-r1-01.m3u8',
-			"nhkr2" => 'https://nhkradioakr2-i.akamaihd.net/hls/live/511929/1-r2/1-r2-01.m3u8',
-			"nhkfm" => 'https://nhkradioakfm-i.akamaihd.net/hls/live/512290/1-fm/1-fm-01.m3u8',
-		}
-	end
-
 
 	def create_player(channel)
 		ffmpeg           = FFMpeg.new
@@ -32,5 +24,32 @@ class Radiru < Radio
 		channel = 'radiru' unless Radiru::channels.has_key? channel
 		File.join @outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 	end
+
+
+  def stations_uri
+    "https://www.nhk.or.jp/radio/config/config_web.xml"
+  end
+
+
+  def parse_stations(body)
+    stations = body.search '//data'
+    stationsjp = {
+      'r1'=> "ラジオ第1",
+      'r2'=> "ラジオ第2",
+      'fm'=> "FM",
+    }
+    stations.map do |station|
+      areajp         = station.at('areajp').text
+      area         = station.at('area').text
+      r1, r2, fm = %w(r1 r2 fm).map do |v|
+        hls = "#{v}hls"
+        id = "nhk#{v}-#{area}".upcase
+        id.sub! /-TOKYO/, ''
+        uri = station.at(hls).text
+        name       = "NHK#{stationsjp[v]}（#{areajp}）"
+        Station.new(id, uri, name: name)
+      end
+    end.flatten
+  end
 
 end
