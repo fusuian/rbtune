@@ -12,6 +12,9 @@ end
 
 
 class TimeFree < RadikoPremium
+	def self.stations
+		[]
+	end
 
 	def record(filename, starttime, sec)
 		endtime = starttime + sec/60/60/24

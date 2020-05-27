@@ -9,9 +9,7 @@ channel  = nil
 date     = nil
 time     = nil
 min      = 30
-
-radio_classes = [Radiko, RadikoPremium]
-stations = radio_classes.map { |radio| radio::channels.keys }.flatten!
+filename = nil
 
 opt = OptionParser.new
 opt.version = Rbtune::VERSION
@@ -19,8 +17,6 @@ opt.banner += <<"EOS"
  station date time min
 
  ラジコプレミアムのタイムフリー機能で公開されている番組を録音（ダウンロード）する
-
-    station: #{stations*'|'}
 
     date:    mm/dd or sun-sat
     time:    HH:MM
@@ -37,15 +33,17 @@ unless ARGV.size == 4
   exit 1
 end
 channel = ARGV[0]
-radio_class = radio_classes.find do |radio|
-  radio::channels[channel]
-end
-unless radio_class
-  puts "station #{channel} は登録されていません"
+
+radio_class, station = Radio.search channel
+if radio_class
+  puts "station: #{station.name}"
+  channel = station.id
+else
+  puts "放送局コード #{channel} は登録されていません"
   exit 1
 end
-filename = channel
-ch = radio_class::channels[channel]
+
+filename ||= channel
 
 begin
   date, time = ARGV[1,2]
@@ -69,7 +67,7 @@ begin
   account, password = kc.account
   radio.login account, password
   radio.open
-  radio.tune ch
+  radio.tune channel
   radio.record filename, starttime, sec
 
 rescue Radio::HTTPBadRequestException
