@@ -22,7 +22,7 @@ class Radiru < Radio
 
 	def make_tmpfile(channel, datetime)
 		channel = 'radiru' unless Radiru::channels.has_key? channel
-		File.join @outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
+		File.join outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 	end
 
 

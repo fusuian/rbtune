@@ -54,7 +54,7 @@ class Radio
 	end
 
 	def initialize
-		@outdir = '.'
+		outdir = '.'
 	end
 
 	def create_player(uri)
@@ -133,12 +133,12 @@ class Radio
 
 
 	def make_tmpfile(channel, datetime)
-		File.join @outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
+		File.join outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 	end
 
 
 	def make_recfile(title, datetime)
-		File.join @outdir, "#{title}.#{datetime}.#{ext}"
+		File.join outdir, "#{title}.#{datetime}.#{ext}"
 	end
 
 	class HTTPBadRequestException < StandardError; end

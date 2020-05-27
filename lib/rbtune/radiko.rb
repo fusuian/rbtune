@@ -108,8 +108,9 @@ class Radiko < Radio
 		areaid = body.split(',')[0]
 	end
 
+
 	def make_tmpfile(channel, datetime)
-		File.join @outdir, "#{channel}.#{datetime}.#{$$}.aac"
+		File.join outdir, "#{channel}.#{datetime}.#{$$}.aac"
 	end
 
 
