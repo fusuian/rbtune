@@ -14,6 +14,9 @@ require "rexml/document"
 
 class Radio
 	attr_accessor :outdir
+	attr_accessor :area_id # for Radiko(Premium)
+	attr_accessor :area_ja # for Radiko(Premium)
+	attr_accessor :area_en # for Radiko(Premium)
 
 	def Radio.inherited(subclass)
 		@@bands ||= []

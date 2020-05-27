@@ -26,6 +26,7 @@ class Radiko < Radio
 	end
 
 
+	# get_auth2 の返り値により @area_id, @area_ja, @area_en が設定される
 	def open
 		unless File.exists? playerfile
 			$stderr.puts 'fetching player...'
@@ -36,6 +37,7 @@ class Radiko < Radio
 		end
 
 		self.authtoken, partialkey = get_auth1 'https://radiko.jp/v2/api/auth1_fms'
+		self.area_id, self.area_ja, self.area_en = get_auth2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
 	end
 
 
@@ -84,6 +86,8 @@ class Radiko < Radio
 		Base64.encode64(key[offset,length]).chomp
 	end
 
+
+	# return: area info
 	def get_auth2(url, authtoken, partialkey)
 		# pp [url, authtoken, partialkey]
 		agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -97,9 +101,8 @@ class Radiko < Radio
 			'X-Radiko-Partialkey'  => partialkey,
 		}
 		body = res.body
-		# pp ">>>\n#{res}\n<<<"
-		body.sub! /\r\n/m, ''
-		areaid = body.split(',')[0]
+		body.force_encoding 'utf-8'
+		body.split(',').map(&:strip)
 	end
 
 

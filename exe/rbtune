@@ -103,6 +103,7 @@ begin
     radio.login account, password
   end
   radio.open
+  p "area: #{radio.area_id} (#{radio.area_ja}: #{radio.area_en})"
   radio.tune channel
   if filename
     sec = min*60
