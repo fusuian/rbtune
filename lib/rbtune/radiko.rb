@@ -9,6 +9,7 @@ require 'swf_ruby'
 
 
 class Radiko < Radio
+	attr_accessor :authtoken
 
 	def playerurl
 		"http://radiko.jp/apps/js/flash/myplayer-release.swf"
@@ -34,19 +35,13 @@ class Radiko < Radio
 			swfextract playerfile, 12, keyfile
 		end
 
-		# $stderr.puts 'fetching auth1...'
 		auth1 = get_auth1 'https://radiko.jp/v2/api/auth1_fms'
-		# pp auth1
-		@authtoken = auth1['X-Radiko-AuthToken'] || auth1['X-RADIKO-AUTHTOKEN']
+		self.authtoken = auth1['X-Radiko-AuthToken'] || auth1['X-RADIKO-AUTHTOKEN']
 		offset = auth1['X-Radiko-KeyOffset'].to_i
 		length = auth1['X-Radiko-KeyLength'].to_i
-		# pp [@authtoken, offset, length]
-		# binding.pry unless @authtoken
-		@partialkey = get_partialkey keyfile, offset, length
+		partialkey = get_partialkey keyfile, offset, length
 
-		# $stderr.puts 'fetching auth2...'
-		# pp [@authtoken, @partialkey]
-		@areaid = get_auth2 'https://radiko.jp/v2/api/auth2_fms', @authtoken, @partialkey
+		area = get_auth2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
 	end
 
 
@@ -65,7 +60,7 @@ class Radiko < Radio
 		rtmpdump           = RtmpDump.new
 		rtmpdump['rtmp']   = uri
 		rtmpdump['swfVfy'] = playerurl
-		rtmpdump['conn']   = %Q(S:"" --conn S:""  --conn S:""  --conn S:#{@authtoken})
+		rtmpdump['conn']   = %Q(S:"" --conn S:""  --conn S:""  --conn S:#{authtoken})
 		rtmpdump
 	end
 
