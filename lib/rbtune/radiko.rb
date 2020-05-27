@@ -30,14 +30,14 @@ class Radiko < Radio
 	def open
 		unless File.exists? playerfile
 			$stderr.puts 'fetching player...'
-			get_file playerurl, playerfile
+			fetch_file playerurl, playerfile
 		end
 		unless File.exists? keyfile
 			swfextract playerfile, 12, keyfile
 		end
 
-		self.authtoken, partialkey = get_auth1 'https://radiko.jp/v2/api/auth1_fms'
-		self.area_id, self.area_ja, self.area_en = get_auth2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
+		self.authtoken, partialkey = authenticate1 'https://radiko.jp/v2/api/auth1_fms'
+		self.area_id, self.area_ja, self.area_en = authenticate2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
 	end
 
 
@@ -61,7 +61,7 @@ class Radiko < Radio
 	end
 
 
-	def get_auth1(url)
+	def authenticate1(url)
 		res = agent.post url, {}, {
 				'pragma'               => 'no-cache',
 				'X-Radiko-App'         => 'pc_ts',
@@ -76,19 +76,19 @@ class Radiko < Radio
 		authtoken = auth1['X-Radiko-AuthToken'] || auth1['X-RADIKO-AUTHTOKEN']
 		offset = auth1['X-Radiko-KeyOffset'].to_i
 		length = auth1['X-Radiko-KeyLength'].to_i
-		partialkey = get_partialkey keyfile, offset, length
+		partialkey = read_partialkey keyfile, offset, length
 		[authtoken, partialkey]
 	end
 
 
-	def get_partialkey(file, offset, length)
+	def read_partialkey(file, offset, length)
 		key = File.open(file, "rb") { |io| io.read(offset + length) }
 		Base64.encode64(key[offset,length]).chomp
 	end
 
 
 	# return: area info
-	def get_auth2(url, authtoken, partialkey)
+	def authenticate2(url, authtoken, partialkey)
 		# pp [url, authtoken, partialkey]
 		agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
 		res = agent.post url, {}, {
@@ -134,7 +134,7 @@ class Radiko < Radio
 	end
 
 
-	def get_file(url, file=nil)
+	def fetch_file(url, file=nil)
 		content = agent.get_file(url)
 		File.open(file, "wb") { |fout| fout.write content } if file
 		content
