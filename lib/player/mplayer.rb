@@ -7,7 +7,7 @@ class Mplayer < Player
 
 	def initialize(url)
 		@url=url
-		self['cache']     = 256
+		self['cache']     = 64
 		self['cache-min'] = 16
 		self['quiet']     = ''      # 画面表示をしない
 	end

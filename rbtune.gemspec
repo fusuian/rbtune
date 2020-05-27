@@ -26,11 +26,10 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = "exe"
-  spec.executables = %w(rbtune rbplay timefree nhk_ondemand)
+  spec.executables = %w(rbtune rbplay timefree)
   spec.require_paths = ["lib"]
 
   spec.add_dependency "mechanize", "~> 2.7"
-  spec.add_dependency "selenium-webdriver", "3.142.6"
   spec.add_dependency "rmagick", "= 2.13.2" # swf_ruby が依存するので固定
   spec.add_dependency "swf_ruby", "~> 0.2"
   spec.add_dependency "pit", "~> 0.0.7"

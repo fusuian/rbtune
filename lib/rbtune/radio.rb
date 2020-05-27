@@ -1,10 +1,10 @@
 # Radio仮想基底クラス
 # Radiko, Radiru, Simul等で継承して使う
 #
-# radio.login account, password
+# radio.login account, password (RadikoPremium 等、必要な場合のみ)
 # radio.open
 # radio.tune channel
-# radio.play
+# radio.play または radio.record
 # radio.close
 
 require "date"
