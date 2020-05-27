@@ -7,7 +7,7 @@ require "fileutils"
 
 class Agqr < Radio
 
-  def self.stations
+  def fetch_stations
     uri = "rtmp://fms-base1.mitene.ad.jp/agqr/aandg1"
     [Station.new('AGQR', uri, name: '超A&G+', ascii_name: 'aandg1')]
   end

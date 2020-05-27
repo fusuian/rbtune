@@ -1,3 +1,5 @@
+require "pstore"
+
 class Station
   attr_reader :name
   attr_reader :id
@@ -9,8 +11,32 @@ class Station
     @db ||= PStore.new(File.join(ENV['HOME'], '.rbtune.db'))
   end
 
+
+  def self.show_stations
+      Radio.bands.each do |radio|
+        name = radio.to_s
+        puts "* #{name}"
+        stations = radio.stations
+        stations.each { |station| puts "    #{station}" } if stations
+        puts ''
+      end
+  end
+
+
+  def self.fetch_stations
+    db = Station::pstore_db
+    Radio.bands.each do |radio_class|
+      $stderr.puts "fetching #{radio_class} stations..."
+      radio = radio_class.new
+      radio.open
+      stations = radio.fetch_stations
+      db.transaction { db[radio_class.to_s] = stations }
+    end
+  end
+
+
   def initialize(id, uri, name: '', ascii_name: '', description: '')
-    @id          = id.upcase
+    @id          = id.to_s.upcase
     @uri         = uri
     @name        = normalize_name name
     @ascii_name  = ascii_name

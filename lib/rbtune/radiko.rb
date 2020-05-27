@@ -3,7 +3,6 @@
 
 require "mechanize"
 require "rbtune/radio"
-require "rbtune/radiko_prefecture"
 require "player/rtmpdump"
 require 'swf_ruby'
 
@@ -113,7 +112,7 @@ class Radiko < Radio
 
 
 	def stations_uri
-		"http://radiko.jp/v3/station/list/#{RadikoPrefecture.prefecture}.xml"
+		"http://radiko.jp/v3/station/list/#{area_id}.xml"
 	end
 
 
@@ -126,11 +125,6 @@ class Radiko < Radio
 			ascii_name = station.at('ascii_name').text
 			Station.new(id, uri, name: name, ascii_name: ascii_name)
 		end
-	end
-
-
-	def agent
-		@agent ||= Mechanize.new
 	end
 
 

@@ -46,12 +46,25 @@ class Radio
 		radio_class, station = self.find(channel) || self.match(channel)
 	end
 
+
+	def agent
+		@agent ||= Mechanize.new
+	end
+
+
+	def fetch_stations
+		body = agent.get stations_uri
+		stations = parse_stations body
+	end
+
 	# Radioクラスのリストから、id と一致する放送局を探す
 	# return: [Radioクラス, 放送局] or nil
 	def self.find(id)
 		Radio.bands.each do |tuner|
-			station = tuner.stations.find {|station| station.id == id}
-			return [tuner, station] if station
+			if tuner.stations
+				station = tuner.stations.find {|station| station.id == id}
+				return [tuner, station] if station
+			end
 		end
 		nil
 	end

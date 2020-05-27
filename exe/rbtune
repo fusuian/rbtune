@@ -13,26 +13,14 @@ quiet    = false
 wait     = 0
 
 account         = nil
-prefecture      = nil
-$set_prefecture = false
-
-stations = Radio.bands.map { |radio|
-  begin
-    chs = radio::channels
-    chs && chs.keys
-  rescue PStore::Error
-    $stderr.puts "WARNING! ラジコの放送局情報が登録されていません。rbtune --fetch-prefecture または rbtune --set-prefecture (県名) を実行してください"
-    []
-  end
-}.flatten!
+$show_stations = false
+$fetch_stations = false
 
 
 opt = OptionParser.new
 Version = Rbtune::VERSION
 opt.banner += <<EOS
  station min
-
-    station: #{stations*'|'}
 
     min:     minutes
 
@@ -43,17 +31,10 @@ opt.on("-o ファイル名","--output","録音するファイル名"){|v| filena
 opt.on("-m [30]", "--min", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
+
+opt.on("-s", "--show-stations", "放送局リストを表示して終了" ) { $show_stations = true }
+opt.on("-f", "--fetch-stations", "放送局リストを取得して終了" ) { $fetch_stations = true }
 opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
-opt.on("--set-prefecture [PREFECTURE]", "ラジコの県域情報を設定して終了") {|v|
-  $set_prefecture = true
-  prefecture = v
-}
-opt.on("--fetch-prefecture", "ラジコの県域情報を取得して終了") {
-  $set_prefecture = true
-}
-opt.on("--show-prefecture", "ラジコの県域情報を表示して終了") {
-  $show_prefecture = true
-}
 opt.parse! ARGV
 
 kc = KeyChain.new("http://radiko.jp")
@@ -62,19 +43,14 @@ when account
   RadikoPremium.set_authentication kc, account
   exit
 
-when $set_prefecture
-  begin
-    RadikoPrefecture.prefecture = prefecture
-    puts "#{prefecture} #{RadikoPrefecture.prefecture} を登録しました"
-    exit
-  rescue RuntimeError
-    $stderr.puts $!
-    exit 1
-  end
-
-when $show_prefecture
-  puts RadikoPrefecture.prefecture
+when $show_stations
+  Station.show_stations
   exit
+
+when $fetch_stations
+  Station.fetch_stations
+  exit
+
 end
 
 unless ARGV.size == 1
@@ -100,7 +76,7 @@ begin
     radio.login account, password
   end
   radio.open
-  p "area: #{radio.area_id} (#{radio.area_ja}: #{radio.area_en})"
+  puts "area: #{radio.area_id} (#{radio.area_ja}: #{radio.area_en})"
   radio.tune channel
   if filename
     sec = min*60
