@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # coding: utf-8
-# 日本のラジオ局のサイトから再生（または録音）する
 
 require "rbtune"
 require "keychain"

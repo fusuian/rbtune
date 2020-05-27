@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# ラジオ配信サイトクラスと放送局コードを指定して、ラジオ放送を受信する。
 
 require "rbtune"
 require "keychain"
@@ -12,8 +11,7 @@ opt.banner += <<"EOS"
 
  ラジオ配信サイトクラスと放送局コードを指定して、ラジオ放送を受信する。
 
-    sites and stations:
-#{Radio::bands.map {|band| %Q(      #{band}: #{band::channels.keys*'|'})} *"\n" }
+    sites: #{Radio::bands * "|" }
 
 EOS
 
@@ -42,7 +40,7 @@ begin
   radio.play
 
 rescue Radio::HTTPForbiddenException
-  puts 'ラジコプレミアムの認証に失敗しました。--set-authentication オプションで正しいアカウントとパスワードを設定してください'
+  puts 'ラジコプレミアムの認証に失敗しました。rbtune --set-authentication で正しいアカウントとパスワードを設定してください'
 
 rescue Interrupt
   # do nothing
