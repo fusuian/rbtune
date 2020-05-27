@@ -42,15 +42,28 @@ class Radio
 	end
 
 
-	def self.find(channel)
-		Radio.bands.find { |tuner| tuner::channels[channel] }
+	def self.search(channel)
+		radio_class, station = self.find(channel) || self.match(channel)
+	end
+
+	# Radioクラスのリストから、id と一致する放送局を探す
+	# return: [Radioクラス, 放送局] or nil
+	def self.find(id)
+		Radio.bands.each do |tuner|
+			station = tuner.stations.find {|station| station.id == id}
+			return [tuner, station] if station
+		end
+		nil
 	end
 
 
-	def self.match(channel)
+	# Radioクラスのリストから、name を含む放送局を探す
+	# return: [Radioクラス, 放送局] or nil
+	def self.match(name)
+		matcher = /#{name}/i
 		Radio.bands.each do |tuner|
 			next unless tuner.stations
-			found = tuner.stations.find { |station| station.name.match?(/#{channel}/i) || station.ascii_name.match?(/#{channel}/i) }
+			found = tuner.stations.find { |station| station.name.match?(matcher) || station.ascii_name.match?(matcher) }
 			return [tuner, found] if found
 		end
 		nil

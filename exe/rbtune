@@ -83,16 +83,13 @@ unless ARGV.size == 1
 end
 channel = ARGV[0].upcase
 
-radio_class = Radio.find channel
-unless radio_class
-  radio_class, station = Radio.match channel
-  if radio_class
-    puts "station: #{station.name}"
-    channel = station.id
-  else
-    puts "放送局コード #{channel} は登録されていません"
-    exit 1
-  end
+radio_class, station = Radio.search channel
+if radio_class
+  puts "station: #{station.name}"
+  channel = station.id
+else
+  puts "放送局コード #{channel} は登録されていません"
+  exit 1
 end
 radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
