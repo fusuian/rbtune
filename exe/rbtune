@@ -7,7 +7,6 @@ require "optparse"
 require "pp"
 
 filename = nil
-min      = 30
 quiet    = false
 wait     = 0
 
@@ -19,15 +18,12 @@ $fetch_stations = false
 opt = OptionParser.new
 Version = Rbtune::VERSION
 opt.banner += <<EOS
- station min
-
-    min:     minutes
+ station [minutes]
 
  らじる★らじる、ラジコなどの日本のラジオ局のサイトから再生（または録音）する
 
 EOS
 opt.on("-o ファイル名","--output","録音するファイル名"){|v| filename = v}
-opt.on("-m [30]", "--min", Float, "録音時間 (分）"){|v| min = v}
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 
@@ -52,7 +48,12 @@ when $fetch_stations
 
 end
 
-unless ARGV.size == 1
+case ARGV.size
+when 1
+  min = 0
+when 2
+  min = ARGV[1].to_f
+else
   puts opt.help
   exit 1
 end
@@ -77,7 +78,8 @@ begin
   radio.open
   puts "area: #{radio.area_id} (#{radio.area_ja}: #{radio.area_en})"
   radio.tune channel
-  if filename
+  if min > 0
+    filename ||= channel
     sec = min*60
     radio.record filename, sec, wait: wait, quiet: quiet
   else
