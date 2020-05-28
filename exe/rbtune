@@ -11,7 +11,7 @@ quiet    = false
 wait     = 0
 
 account         = nil
-$show_stations = false
+$show_stations  = false
 $fetch_stations = false
 
 
@@ -27,7 +27,7 @@ opt.on("-o ファイル名","--output","録音するファイル名"){|v| filena
 opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 
-opt.on("-s", "--show-stations", "放送局リストを表示して終了" ) { $show_stations = true }
+opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { $show_stations = true }
 opt.on("-f", "--fetch-stations", "放送局リストを取得して終了" ) { $fetch_stations = true }
 opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
 opt.parse! ARGV
@@ -61,7 +61,7 @@ channel = ARGV[0].upcase
 
 radio_class, station = Radio.search channel
 if radio_class
-  puts "station: #{station.name}"
+  puts "#{station.name} (#{radio_class})"
   channel = station.id
 else
   puts "放送局コード #{channel} は登録されていません"
