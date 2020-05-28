@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["ASAHI,Michiharu"]
   spec.email         = ["fusuian@gmail.com"]
 
-  spec.summary       = %q{The Japanese Netradio Player and Recorder.}
-  spec.description   = %q{Playing and Recording Radiko, Radiru*Radiru, Radiko Premium, SimulRadio and ListenRadio.}
+  spec.summary       = %q{The Japanese IP simulcast Player and Recorder.}
+  spec.description   = %q{Playing and Recording Radiko, Radiru*Radiru and the other IP simulcast sites.}
   spec.homepage      = "https://github.com/fusuian/rbtune"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
