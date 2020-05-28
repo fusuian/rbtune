@@ -125,19 +125,25 @@ class Radio
 
 		player = create_player uri
 
-		rtime = 0
-		s     = sec
-		res   = nil
-		while s > 0 do
-			rtime += Benchmark.realtime do
-				dt = datetime dt
-				tmpfile = make_tmpfile @channel, dt
-				res = player.rec tmpfile, s, quiet
-				# p ["*** res", res]
-				convert tmpfile, make_recfile(filename, dt)
+		res     = nil
+		tmpfile = nil
+		rtime   = 0
+		s       = sec
+		begin
+			while s > 0 do
+				rtime += Benchmark.realtime do
+					dt = datetime dt
+					tmpfile = make_tmpfile @channel, dt
+					res = player.rec tmpfile, s, quiet
+					# p ["*** res", res]
+					convert tmpfile, make_recfile(filename, dt)
+				end
+				s -= rtime
+				dt = DateTime.now
 			end
-			s -= rtime
-			dt = DateTime.now
+
+		rescue Interrupt
+			convert tmpfile, make_recfile(filename, dt)
 		end
 		res
 	end
