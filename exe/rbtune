@@ -25,8 +25,8 @@ EOS
 opt.on("-o ファイル名","--output","録音するファイル名"){|v| filename = v}
 opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 
-opt.on("-f", "--fetch-stations", "放送局リストを取得して終了" ) { fetch_stations = true }
 opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { list_stations = true }
+opt.on("--fetch-stations", "放送局リストを取得して終了" ) { fetch_stations = true }
 opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
 opt.parse! ARGV
 
