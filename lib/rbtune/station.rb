@@ -12,7 +12,7 @@ class Station
   end
 
 
-  def self.show_stations
+  def self.list_stations
       Radio.bands.each do |radio|
         name = radio.to_s
         stations = radio.stations
