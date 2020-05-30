@@ -11,6 +11,7 @@ time     = nil
 min      = 30
 filename = nil
 
+account        = nil
 list_stations  = false
 fetch_stations = false
 
@@ -29,10 +30,15 @@ EOS
 opt.on("-o FILE", "--output", "録音するファイル名 (省略時、放送局コード)"){|v| filename=v}
 opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { list_stations = true }
 opt.on("--fetch-stations", "放送局リストを取得して終了" ) { fetch_stations = true }
+opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
 opt.parse! ARGV
 
 kc = KeyChain.new("http://radiko.jp")
 case
+when account
+  RadikoPremium.set_authentication kc, account
+  exit
+
 when list_stations
   Station.list_stations
   exit
@@ -89,7 +95,7 @@ rescue Radio::HTTPBadRequestException
   puts "HTTPBadRequest: 番組の公開が終了しています"
 
 rescue Radio::HTTPForbiddenException
-  puts 'ラジコプレミアムの認証に失敗しました。rdtune コマンドの --set-account オプションで正しいアカウントとパスワードを設定してください'
+  puts 'ラジコプレミアムの認証に失敗しました。timefree --set-account で正しいアカウントとパスワードを設定してください'
 
 rescue Interrupt
   # do nothing
