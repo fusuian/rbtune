@@ -37,6 +37,7 @@ class Radiko < Radio
 
 		self.authtoken, partialkey = authenticate1 'https://radiko.jp/v2/api/auth1_fms'
 		self.area_id, self.area_ja, self.area_en = authenticate2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
+		puts "area: #{area_id} (#{area_ja}: #{area_en})"
 	end
 
 
