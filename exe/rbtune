@@ -10,8 +10,8 @@ filename = nil
 quiet    = false
 
 account         = nil
-$show_stations  = false
-$fetch_stations = false
+show_stations  = false
+fetch_stations = false
 
 
 opt = OptionParser.new
@@ -25,8 +25,8 @@ EOS
 opt.on("-o ファイル名","--output","録音するファイル名"){|v| filename = v}
 opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 
-opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { $show_stations = true }
-opt.on("-f", "--fetch-stations", "放送局リストを取得して終了" ) { $fetch_stations = true }
+opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { show_stations = true }
+opt.on("-f", "--fetch-stations", "放送局リストを取得して終了" ) { fetch_stations = true }
 opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
 opt.parse! ARGV
 
@@ -36,11 +36,11 @@ when account
   RadikoPremium.set_authentication kc, account
   exit
 
-when $show_stations
+when show_stations
   Station.show_stations
   exit
 
-when $fetch_stations
+when fetch_stations
   Station.fetch_stations
   exit
 
