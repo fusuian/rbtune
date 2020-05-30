@@ -121,11 +121,11 @@ class Radio
 			# $stderr.puts "play: #{sec}, #{filename}, #{quiet}"
 			player      = create_player uri
 			remain_sec  = sec
-			MINIMUM_SEC = 60   # 最小で録音する秒数
 			res         = nil
 			tmpfile     = nil
 			rtime       = 0
-			while remain_sec > MINIMUM_SEC do
+			minimum_sec = 60   # 残り録音時間がこれ以下ならば、録音が中断してもやり直さない
+			while remain_sec > minimum_sec do
 				rtime += Benchmark.realtime do
 					dt = datetime dt
 					tmpfile = make_tmpfile @channel, dt
