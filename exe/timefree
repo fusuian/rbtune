@@ -11,6 +11,8 @@ time     = nil
 min      = 30
 filename = nil
 
+show_stations  = false
+
 opt = OptionParser.new
 opt.version = Rbtune::VERSION
 opt.banner += <<"EOS"
@@ -23,12 +25,18 @@ opt.banner += <<"EOS"
     min:     minutes
 
 EOS
-opt.on("-o ファイル名", "--output", "出力ファイル [放送局コード]"){|v| filename=v}
+opt.on("-o FILE", "--output", "録音するファイル名 (省略時、放送局コード)"){|v| filename=v}
+opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { show_stations = true }
 opt.parse! ARGV
 
 kc = KeyChain.new("http://radiko.jp")
 
-unless ARGV.size == 4
+case
+when show_stations
+  Station.show_stations
+  exit
+
+when ARGV.size != 4
   puts opt.help
   exit 1
 end

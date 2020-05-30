@@ -15,10 +15,12 @@ class Station
   def self.show_stations
       Radio.bands.each do |radio|
         name = radio.to_s
-        puts "* #{name}"
         stations = radio.stations
-        stations.each { |station| puts "    #{station}" } if stations
-        puts ''
+        unless stations.empty?
+          puts "* #{name}"
+          stations.each { |station| puts "    #{station}" }
+          puts ''
+        end
       end
   end
 

@@ -112,33 +112,28 @@ class Radio
 	end
 
 
-	def record(filename, sec, wait: 0, quiet: false, dt: DateTime.now)
-		uri = channel_to_uri
-		raise 'not tuned yet.' unless uri
-		puts "play: #{uri}"
-		# $stderr.puts "play: #{sec}, #{filename}, #{quiet}, #{wait}"
-
-		if wait > 0
-			$stderr.puts "waiting #{wait} sec..."
-			sleep wait
-		end
-
-		player = create_player uri
-
-		res     = nil
-		tmpfile = nil
-		rtime   = 0
-		s       = sec
+	def record(filename, sec, quiet: false, dt: DateTime.now)
 		begin
-			while s > 0 do
+			uri = channel_to_uri
+			raise 'not tuned yet.' unless uri
+
+			puts "play: #{uri}"
+			# $stderr.puts "play: #{sec}, #{filename}, #{quiet}"
+			player      = create_player uri
+			remain_sec  = sec
+			MINIMUM_SEC = 60   # 最小で録音する秒数
+			res         = nil
+			tmpfile     = nil
+			rtime       = 0
+			while remain_sec > MINIMUM_SEC do
 				rtime += Benchmark.realtime do
 					dt = datetime dt
 					tmpfile = make_tmpfile @channel, dt
-					res = player.rec tmpfile, s, quiet
+					res = player.rec tmpfile, remain_sec, quiet
 					# p ["*** res", res]
 					convert tmpfile, make_recfile(filename, dt)
 				end
-				s -= rtime
+				remain_sec -= rtime
 				dt = DateTime.now
 			end
 

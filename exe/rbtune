@@ -8,7 +8,6 @@ require "pp"
 
 filename = nil
 quiet    = false
-wait     = 0
 
 account         = nil
 $show_stations  = false
@@ -24,7 +23,6 @@ opt.banner += <<EOS
 
 EOS
 opt.on("-o ファイル名","--output","録音するファイル名"){|v| filename = v}
-opt.on("-w [0]", "--wait", Float, "録音開始までの待ち時間（秒）")
 opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 
 opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { $show_stations = true }
@@ -81,7 +79,7 @@ begin
   if min > 0
     filename ||= channel
     sec = min*60
-    radio.record filename, sec, wait: wait, quiet: quiet
+    radio.record filename, sec, quiet: quiet
   else
     radio.play
   end
