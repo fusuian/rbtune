@@ -7,9 +7,20 @@ class RadikoPremium < Radiko
 
 	def self.set_authentication(kc, account)
 		begin
-			kc.query('ラジコプレミアムのパスワードを入力してください', account)
-		rescue RuntimeError => ex
-			puts ex
+			password = kc.query('ラジコプレミアムのパスワードを入力してください', account)
+			radio = RadikoPremium.new
+			radio.login account, password
+			kc.set account, password
+			puts "Radikoプレミアムのアカウントが正しく登録されました"
+
+		rescue Radio::HTTPForbiddenException
+			$stderr.puts "アカウント情報が正しくありません"
+
+		rescue RuntimeError
+			$stderr.puts $!
+
+		ensure
+			radio && radio.close
 		end
 	end
 

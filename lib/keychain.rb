@@ -36,7 +36,12 @@ class KeyChain
     STDOUT.flush
     new_password = STDIN.noecho(&:gets).chomp
     puts
-    raise "空のパスワードは無効です (何も変更されません)" if new_password.empty?
-    set account, new_password
+    case
+    when new_password.empty?
+      raise "空のパスワードは無効です (何も変更されません)"
+    when new_password == old_password
+      raise "旧パスワードと同じパスワードです"
+    end
+    new_password
   end
 end
