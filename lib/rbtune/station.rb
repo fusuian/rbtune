@@ -70,6 +70,8 @@ class Station
 
 
   def normalize_name(name)
+    # NHKの局名はnormalizeしない (NHKFM-* の-が取れてしまうから)
+    return name if name.include?('NHK')
     name.strip
     .sub(/[ -]?FM[ -]?/i, 'FM')
     .sub(/fm|ＦＭ|エフエム|えふえむ/, 'FM')
