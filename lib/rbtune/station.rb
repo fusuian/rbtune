@@ -16,7 +16,10 @@ class Station
       Radio.bands.each do |radio|
         name = radio.to_s
         stations = radio.stations
-        unless stations.empty?
+        if stations.nil? || stations.empty?
+          $stderr.puts "warning: #{name} に放送局が登録されていません。"
+          $stderr.puts "         rbtune --fetch-stations を実行して、放送局情報を取得してください。"
+        else
           puts "* #{name}"
           stations.each { |station| puts "    #{station}" }
           puts ''
@@ -28,11 +31,31 @@ class Station
   def self.fetch_stations
     db = Station::pstore_db
     Radio.bands.each do |radio_class|
-      $stderr.puts "fetching #{radio_class} stations..."
-      radio = radio_class.new
-      radio.open
-      stations = radio.fetch_stations
-      db.transaction { db[radio_class.to_s] = stations }
+      begin
+        $stderr.puts ">>> fetching #{radio_class} stations..."
+        radio = radio_class.new
+        radio.open
+        stations = radio.fetch_stations
+        if stations.empty?
+          $stderr.puts "    warning: no station found."
+        else
+          db.transaction { db[radio_class.to_s] = stations }
+          $stderr.puts "    #{stations.size} stations fetched."
+        end
+
+      rescue SocketError
+        $stderr.puts $!
+
+      rescue Net::HTTPNotFound
+        $stderr.puts $!
+
+      rescue REXML::ParseException
+        $stderr.puts $!
+
+      rescue
+        # 例外を握りつぶしてすべてのクラスの放送局情報の取得を試みる
+        $stderr.puts $!
+      end
     end
   end
 
