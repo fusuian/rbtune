@@ -1,6 +1,4 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in rbradi.gemspec
+# Specify your gem's dependencies in rbtune.gemspec
 gemspec
-
-gem "selenium-webdriver", "~> 3.142"
