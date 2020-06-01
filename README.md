@@ -1,35 +1,152 @@
-# Rbradi
+# rbtune
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rbradi`. To experiment with that code, run `bin/console` for an interactive prompt.
+日本国内のラジオ局のIPサイマル放送を受信するツールです。
+録音機能もあり、OSの定時実行機能と組み合わせてラジオ番組の予約録音が可能です。
+主な使い方として、RaspberryPi を24時間稼働させて、cron から rbtune を呼び出すことで、ラジオ番組の予約録音サーバにします。
 
-TODO: Delete this and the text above, and describe your gem
+おまけとして、radiko で放送後一週間程度番組を聴取できるタイムフリー機能から録音するツール timefree が付属しています。
 
-## Installation
 
-Add this line to your application's Gemfile:
+## 対応しているIPサイマル放送
 
-```ruby
-gem 'rbradi'
-```
+以下のIPサイマル放送に対応しています。
 
-And then execute:
+- NHKネットラジオ らじる★らじる
+- radiko （radikoプレミアム）
+- SimulRadio
+- ListenRadio
+- JCBA インターネットサイマルラジオ
+- 超!A&G+
 
-    $ bundle
 
-Or install it yourself as:
+## インストールと設定
 
-    $ gem install rbradi
+ffmpeg, rtmpdump, mplayer をインストールする必要があります。
 
-## Usage
+    $ sudo apt install ffmpeg rtmpdump mplayer
 
-TODO: Write usage instructions here
+rbtune 本体は gem でインストールできます。Ruby 2.6以降が必要です。
 
-## Development
+    $ gem install rbtune
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### 放送局リストの取得
 
-## Contributing
+インストールしたらまず、ネットから放送局リストを取得します。
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rbradi.
+    $ rbtune --fetch-stations
+
+対応するすべてのサイトの情報を取得しますが、IPサイマル放送サイトの仕様変更により、取得ができなくなる場合があります。
+放送局リストはホームディレクトリにある .rbtune.db に保存されます。
+
+
+### radikoプレミアムの認証情報の設定
+
+radikoのプレミアム会員であれば、他県の放送を聴取できるエリアフリー機能を利用できます。
+--set-account オプションで登録メールアドレスとパスワードを設定します。
+
+    $ rbtune --set-account メールアドレス
+    radikoプレミアムのパスワードを入力してください
+      password :
+
+パスワードを入力してエンターキーを押すと、登録できます。
+何も入力せずにエンターキーを押すと、現在の設定のままになります。
+
+各種設定はホームディレクトリにある .pit/default.yaml に保存されます。
+保存パスワードには暗号化はほどこされていないので、流出にご注意ください。
+
+
+### アンインストールするとき
+
+rbtune ならびに timefree が不要になったら、以下のコマンドでアンインストールできます。
+
+    $ gem uninstall rbtune
+
+
+## 使い方
+
+rbtune --help を実行すると、以下のヘルプメニューが表示されます。
+
+    Usage: rbtune [options] station [minutes]
+
+     らじる★らじる、radikoなどの日本のラジオ局のIPサイマル放送を聴取・録音する
+
+        -o, --output FILE                録音するファイル名 (省略時、放送局コード)
+        -q, --quiet                      録音時に再生しない
+        -l, --list-stations              放送局リストを表示して終了
+            --fetch-stations             放送局リストを取得して終了
+            --set-account ACCOUNT        radikoプレミアムのアカウントを登録して終了
+
+
+### 聴取する
+
+ラジオ局を指定して実行すると、ラジオ番組を聴取します。
+
+    $ rbtune station
+
+station には --list-stations で表示される放送局のIDまたは名前を指定します。
+名前の一部を指定した場合、放送局リストで一番最初に見つけた局を受信します。
+なお、局の都合や回線の状況により、放送局リストに存在する局を実際には受信できないことがあります。
+
+
+### 録音する
+
+ラジオ局に加えて、何分間録音するかを指定することで、放送中のラジオ番組をファイルに録音できます。
+
+    $ rbtune station minutes
+
+minutes は分単位です。小数も指定でき、0.5分は30秒となりますが、回線の状況等により、指定した時間より短く録音される場合があります。
+ファイルの保存先はカレントディレクトリですが、環境変数 RADIODIR を設定すると、ファイルはそのディレクトリに保存されます。（ディレクトリはあらかじめ作っておいてください）
+
+録音したファイルは 放送局コード.年-月-日T時=分.ext という形式になります。ファイル拡張子 ext はIPサイマル放送によって異なります。
+
+--output オプションを指定すると、保存されるファイル名は FILE.年-月-日T時=分.ext となります。
+回線の状況等によって録音が中断した場合、録音の再開を試みます。その場合、ファイル名の 年-月-日T時=分 の部分は、再開した日時になります。
+
+--quiet オプションを指定すると、受信した番組を無音のまま録音します。
+
+
+### 録音機能についての注意
+
+回線や放送サーバの状況によって、録音が中断したり、中断からの再開に失敗したり、番組の途中で録音が終了してしまう場合があります。
+rbtune によるあらゆる聴取・録音の失敗について、作者は責任を追うことができません。
+あしからずご了承ください。
+
+
+# timefree
+
+radikoのタイムフリーで聴取可能な番組を録音するツールです。rbtune と同時にインストールされます。
+
+
+## 使い方
+
+timefree --help を実行すると、以下のヘルプメニューが表示されます。
+
+    Usage: timefree [options] station date time minutes
+
+     radikoのタイムフリー機能で公開されている番組をファイルに録音する
+
+        date:    [年/]月/日 or sun,mon,tue,wed,thu,fri and sat
+        time:    時:分
+
+        -o, --output FILE                録音するファイル名 (省略時、放送局コード)
+        -l, --list-stations              放送局リストを表示して終了
+            --fetch-stations             放送局リストを取得して終了
+            --set-account ACCOUNT        radikoプレミアムのアカウントを登録して終了
+
+
+timefree で --fetch-stations を行った場合、radiko と radikoプレミアムの放送局リストだけが取得されます。
+
+date には 年/月/日 や 月/日 形式以外にも、英語の曜日の省略形が使えます。
+日月火水木金土が、sun, mon, tue, wed, thu, fri, sat に対応します。
+time は 時:分 形式で指定しますが、24〜29時も指定できます。
+
+minutes は rbtune 同様、分単位です。
+
+radikoのタイムフリー機能では、放送から約一週間分の番組を聴取できます。
+当然、聴取期間が過ぎてしまった番組を録音することはできません。
+
+
+## プロジェクトへの協力
+
+バグ報告やプルリクエストは Github の https://github.com/fusuian/rbtune まで、よろしくお願いします。
