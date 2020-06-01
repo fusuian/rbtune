@@ -85,8 +85,10 @@ sec = min*60
 begin
   radio=TimeFree.new
   radio.outdir = ENV['RADIODIR'] || '.'
-  account, password = kc.account
-  radio.login account, password
+  if radio.is_a? RadikoPremium
+    account, password = kc.account
+    radio.login account, password
+  end
   radio.open
   radio.tune channel
   radio.record filename, starttime, sec
