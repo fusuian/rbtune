@@ -40,7 +40,7 @@ begin
   radio.play
 
 rescue Radio::HTTPForbiddenException
-  puts 'ラジコプレミアムの認証に失敗しました。rbtune --set-authentication で正しいアカウントとパスワードを設定してください'
+  puts 'radikoプレミアムの認証に失敗しました。rbtune --set-authentication で正しいアカウントとパスワードを設定してください'
 
 rescue Interrupt
   # do nothing

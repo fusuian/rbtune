@@ -7,7 +7,7 @@ class RadikoPremium < Radiko
 
 	def self.set_authentication(kc, account)
 		begin
-			password = kc.query('ラジコプレミアムのパスワードを入力してください', account)
+			password = kc.query('radikoプレミアムのパスワードを入力してください', account)
 			radio = RadikoPremium.new
 			radio.login account, password
 			kc.set account, password

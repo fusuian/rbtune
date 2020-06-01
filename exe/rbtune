@@ -9,7 +9,7 @@ require "pp"
 filename = nil
 quiet    = false
 
-account         = nil
+account        = nil
 list_stations  = false
 fetch_stations = false
 
@@ -19,15 +19,15 @@ Version = Rbtune::VERSION
 opt.banner += <<EOS
  station [minutes]
 
- らじる★らじる、ラジコなどの日本のラジオ局のサイトから再生（または録音）する
+ らじる★らじる、radikoなどの日本のラジオ局のIPサイマル放送を聴取・録音する
 
 EOS
-opt.on("-o ファイル名","--output","録音するファイル名"){|v| filename = v}
-opt.on("-q", "--quiet", "録音時に再生しない" ) {|v| quiet = true}
 
+opt.on("-o FILE", "--output", "録音するファイル名 (省略時、放送局コード)"){|v| filename = v}
+opt.on("-q", "--quiet", "録音時に再生しない" ) { quiet = true }
 opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { list_stations = true }
 opt.on("--fetch-stations", "放送局リストを取得して終了" ) { fetch_stations = true }
-opt.on("--set-account ACCOUNT", "ラジコプレミアムのアカウントを登録して終了") {|v| account = v}
+opt.on("--set-account ACCOUNT", "radikoプレミアムのアカウントを登録して終了") {|v| account = v}
 opt.parse! ARGV
 
 kc = KeyChain.new("http://radiko.jp")
@@ -65,6 +65,7 @@ else
   puts "放送局コード #{channel} は登録されていません"
   exit 1
 end
+
 radio = radio_class.new
 radio.outdir = ENV['RADIODIR'] || '.'
 
@@ -84,7 +85,7 @@ begin
   end
 
 rescue Radio::HTTPForbiddenException
-  puts 'ラジコプレミアムの認証に失敗しました。--set-account オプションで正しいアカウントとパスワードを設定してください'
+  puts 'radikoプレミアムの認証に失敗しました。--set-account オプションで正しいアカウントとパスワードを設定してください'
 
 rescue Interrupt
   # do nothing
