@@ -43,6 +43,11 @@ class Simul < Radio
 	end
 
 
+  def convert(tmpfile, recfile)
+  	convert_ffmpeg(tmpfile, recfile)
+  end
+
+
 	def link_to_station_id(link)
 		link =~ %r{(/asx/([\w-]+).asx|nkansai.tv/(\w+)/?\Z|(flower|redswave|fm-tanba|darazfm|AmamiFM|comiten|fm-shimabara|fm-kitaq))}
 		id = ($2 || $3 || $4).sub(/fm[-_]/, 'fm').sub(/[-_]fm/, 'fm')

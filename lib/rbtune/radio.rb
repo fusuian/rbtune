@@ -160,6 +160,16 @@ class Radio
 	end
 
 
+	def convert_ffmpeg(tmpfile, recfile)
+		ffmpeg = FFMpeg.new
+		ffmpeg['loglevel'] = 'quiet'
+		ffmpeg['i'] = %Q("#{tmpfile}")
+		ffmpeg['acodec'] = 'copy'
+		stdout, stderr, status = ffmpeg.rec recfile
+		FileUtils.rm tmpfile if status.success?
+	end
+
+
 	def datetime(dt)
 		dt.to_s[0..15].gsub(/:/, '=')
 	end
