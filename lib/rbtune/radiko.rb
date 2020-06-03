@@ -10,6 +10,10 @@ require 'swf_ruby'
 class Radiko < Radio
 	attr_reader :authtoken
 
+	def initialize
+		super
+		@ext = 'aac'
+	end
 
 	def playerurl
 		"http://radiko.jp/apps/js/flash/myplayer-release.swf"
@@ -45,11 +49,6 @@ class Radiko < Radio
 	def channel_to_uri
 		xml = agent.get "http://radiko.jp/v2/station/stream/#{@channel}.xml"
 		xml.at('//url/item').text
-	end
-
-
-	def ext
-		'm4a'
 	end
 
 
@@ -105,12 +104,6 @@ class Radiko < Radio
 		body.force_encoding 'utf-8'
 		body.split(',').map(&:strip)
 	end
-
-
-	def make_tmpfile(channel, datetime)
-		File.join outdir, "#{channel}.#{datetime}.#{$$}.aac"
-	end
-
 
 
 	def stations_uri

@@ -6,8 +6,9 @@ require "rbtune/station"
 
 class Simul < Radio
 
-	def ext
-		'wma'
+	def initialize
+		super
+		@ext = 'wma'
 	end
 
 

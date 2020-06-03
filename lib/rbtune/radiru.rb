@@ -7,22 +7,12 @@ require "fileutils"
 
 class Radiru < Radio
 
-	def ext
-		'm4a'
-	end
-
 
 	def create_player(uri)
 		ffmpeg           = FFMpeg.new
 		ffmpeg['i']      = uri # input stream
 		ffmpeg['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
 		ffmpeg
-	end
-
-
-	def make_tmpfile(channel, datetime)
-		channel = 'radiru' unless Radiru::channels.has_key? channel
-		File.join outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 	end
 
 

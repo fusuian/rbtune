@@ -13,8 +13,6 @@ class Agqr < Radio
   end
 
 
-  def ext; 'm4a'; end
-
   def create_player(uri)
     rtmpdump           = RtmpDump.new
     rtmpdump['rtmp']   = uri

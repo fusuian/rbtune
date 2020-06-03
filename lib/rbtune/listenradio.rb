@@ -11,8 +11,9 @@ require "json"
 
 class ListenRadio < Radio
 
-	def ext
-		"mp4"
+	def initialize
+		super
+		@ext = 'mp4'
 	end
 
 	def create_player(uri)
