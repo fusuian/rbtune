@@ -83,7 +83,7 @@ class Radio
 	end
 
 	def initialize
-		outdir = '.'
+		self.outdir = '.'
 	end
 
 	def create_player(uri)
