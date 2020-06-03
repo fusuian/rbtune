@@ -25,9 +25,17 @@ class Radio
 		@@bands << subclass
 	end
 
+
+	def initialize
+		@outdir = '.'
+		@ext = 'm4a'
+	end
+
+
 	def self.db
 		@@db ||= Station::pstore_db
 	end
+
 
 	def self.stations
 		@stations ||= self.db.transaction(true) { self.db[name] }
@@ -48,16 +56,6 @@ class Radio
 		radio_class, station = self.find(channel) || self.match(channel)
 	end
 
-
-	def agent
-		@agent ||= Mechanize.new
-	end
-
-
-	def fetch_stations
-		body = agent.get stations_uri
-		stations = parse_stations body
-	end
 
 	# Radioクラスのリストから、id と一致する放送局を探す
 	# return: [Radioクラス, 放送局] or nil
@@ -84,10 +82,11 @@ class Radio
 		nil
 	end
 
-	def initialize
-		@outdir = '.'
-		@ext = 'm4a'
+
+	def agent
+		@agent ||= Mechanize.new
 	end
+
 
 	def create_player(uri)
 		# rtmpdumpのコマンドラインを生成する(playから呼ばれる)
@@ -183,6 +182,13 @@ class Radio
 	def make_recfile(title, datetime)
 		File.join outdir, "#{title}.#{datetime}.#{out_ext}"
 	end
+
+
+	def fetch_stations
+		body = agent.get stations_uri
+		stations = parse_stations body
+	end
+
 
 	class HTTPBadRequestException < StandardError; end
 	class HTTPForbiddenException < StandardError; end
