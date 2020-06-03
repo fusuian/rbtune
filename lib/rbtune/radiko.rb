@@ -8,7 +8,8 @@ require 'swf_ruby'
 
 
 class Radiko < Radio
-	attr_accessor :authtoken
+	attr_reader :authtoken
+
 
 	def playerurl
 		"http://radiko.jp/apps/js/flash/myplayer-release.swf"
@@ -35,8 +36,8 @@ class Radiko < Radio
 			swfextract playerfile, 12, keyfile
 		end
 
-		self.authtoken, partialkey = authenticate1 'https://radiko.jp/v2/api/auth1_fms'
-		self.area_id, self.area_ja, self.area_en = authenticate2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
+		@authtoken, partialkey = authenticate1 'https://radiko.jp/v2/api/auth1_fms'
+		@area_id, @area_ja, @area_en = authenticate2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
 		puts "area: #{area_id} (#{area_ja}: #{area_en})"
 	end
 
