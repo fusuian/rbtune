@@ -127,7 +127,7 @@ class Radio
 			tmpfile     = nil
 			rtime       = 0
 			minimum_sec = 60   # 残り録音時間がこれ以下ならば、録音が中断してもやり直さない
-			while remain_sec > minimum_sec do
+			begin
 				rtime += Benchmark.realtime do
 					dt = datetime dt
 					tmpfile = make_tmpfile @channel, dt
@@ -137,7 +137,7 @@ class Radio
 				end
 				remain_sec -= rtime
 				dt = DateTime.now
-			end
+			end while remain_sec >= minimum_sec
 
 		rescue Interrupt
 			convert tmpfile, make_recfile(filename, dt)
