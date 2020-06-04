@@ -9,6 +9,7 @@ class Simul < Radio
 	def initialize
 		super
 		@ext = 'wma'
+		@out_ext = 'aac'
 	end
 
 
@@ -43,9 +44,9 @@ class Simul < Radio
 	end
 
 
-  def convert(tmpfile, recfile)
-  	convert_ffmpeg(tmpfile, recfile)
-  end
+	def convert(tmpfile, recfile)
+		convert_ffmpeg(tmpfile, recfile)
+	end
 
 
 	def link_to_station_id(link)

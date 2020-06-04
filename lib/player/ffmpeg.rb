@@ -37,7 +37,7 @@ class FFMpeg < Player
 
 
 	def rec(file, sec, quiet = true)
-		self['t'] = sec
+		self['t'] = sec if sec
 		if quiet
 			@output = file
 			cmd = to_s

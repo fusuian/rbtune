@@ -118,7 +118,7 @@ class Radio
 			uri = channel_to_uri
 			raise 'not tuned yet.' unless uri
 
-			puts "play: #{uri}"
+			puts "record: #{uri}"
 			# $stderr.puts "play: #{sec}, #{filename}, #{quiet}"
 			player      = create_player uri
 			remain_sec  = sec
@@ -131,8 +131,8 @@ class Radio
 					dt = datetime dt
 					tmpfile = make_tmpfile @channel, dt
 					res = player.rec tmpfile, remain_sec, quiet
-					# p ["*** res", res]
-					convert tmpfile, make_recfile(filename, dt)
+					recfile = make_recfile(filename, dt)
+					convert tmpfile, recfile
 				end
 				remain_sec -= rtime
 				dt = DateTime.now
@@ -162,8 +162,8 @@ class Radio
 		ffmpeg = FFMpeg.new
 		ffmpeg['loglevel'] = 'quiet'
 		ffmpeg['i'] = %Q("#{tmpfile}")
-		ffmpeg['acodec'] = 'copy'
-		stdout, stderr, status = ffmpeg.rec recfile
+		ffmpeg['b:a'] = '70k'
+		stdout, stderr, status = ffmpeg.rec recfile, nil
 		FileUtils.rm tmpfile if status.success?
 	end
 
