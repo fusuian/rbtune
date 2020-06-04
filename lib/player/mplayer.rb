@@ -43,11 +43,11 @@ class Mplayer < Player
 
 		stdin, stdout, stderr, wait_thread = Open3.popen3(to_s)
 		begin
+			# Timeout#timeout で時間を測り、stdin に q を送って mplayer を止める
 			Timeout.timeout(sec) do
 				wait_thread.join
 			end
 		rescue Timeout::Error
-			# p "timeout"
 			stdin.write 'q'
 		end
 	end
