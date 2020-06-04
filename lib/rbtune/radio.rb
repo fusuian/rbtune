@@ -15,7 +15,6 @@ require "rexml/document"
 class Radio
 	attr_accessor :outdir
 	attr_reader   :ext
-	alias         :out_ext :ext
 	attr_reader   :area_id # for Radiko(Premium)
 	attr_reader   :area_ja # for Radiko(Premium)
 	attr_reader   :area_en # for Radiko(Premium)
@@ -178,6 +177,10 @@ class Radio
 		File.join outdir, "#{channel}.#{datetime}.#{$$}.#{ext}"
 	end
 
+
+	def out_ext
+		@out_ext || ext
+	end
 
 	def make_recfile(title, datetime)
 		File.join outdir, "#{title}.#{datetime}.#{out_ext}"
