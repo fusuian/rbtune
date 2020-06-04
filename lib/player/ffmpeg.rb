@@ -4,8 +4,6 @@ require "open3"
 require "player/mplayer"
 
 class FFMpeg < Player
-	attr_accessor :output
-
 	def initialize
 		self['loglevel'] = 'warning'
 		self['n']        = '' # do not overwrite
