@@ -38,16 +38,15 @@ class FFMpeg < Player
 	end
 
 
-	# secを指定しない場合、時間待ちをしない
-	def rec(tmpfile, sec = nil, quiet = true)
-		self['t'] = sec if sec
+	def rec(file, sec, quiet = true)
+		self['t'] = sec
 		if quiet
-			@output = tmpfile
+			@output = file
 			cmd = to_s
 		else
 			self['f'] = 'mpegts'
 			@output = 'pipe:1'
-			cmd = "#{to_s} | tee #{tmpfile} | #{@mplayer}"
+			cmd = "#{to_s} | tee #{file} | #{@mplayer}"
 		end
 
 		puts "rec: #{cmd}"

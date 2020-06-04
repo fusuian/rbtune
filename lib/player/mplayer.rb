@@ -33,19 +33,17 @@ class Mplayer < Player
 	end
 
 
-	def rec(tmpfile, sec, quiet = true)
-		super
+	def rec(file, sec, quiet = true)
 		self['dumpstream'] = ''
-		self['dumpfile']   = tmpfile
+		self['dumpfile']   = file
 		if quiet
 			self['nosound'] = ''	# 音声を再生しない
 		end
 
 		stdin, stdout, stderr, wait_thread = Open3.popen3(to_s)
 		dsec = -1
-		start = Time.now
 		while dsec <= sec
-			dsec = duration(tmpfile)
+			dsec = duration(file)
 			sleep 1
 		end
 		stdin.write 'q'

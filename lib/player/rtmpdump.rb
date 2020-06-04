@@ -4,7 +4,6 @@ require "player/player"
 
 class RtmpDump < Player
 	def initialize
-		super
 		self['live'] = ''
 		self['quiet'] = ''
 	end
@@ -21,17 +20,14 @@ class RtmpDump < Player
 	end
 
 
-	def rec(tmpfile, sec, quiet = true)
-		super
+	def rec(file, sec, quiet = true)
 		self['stop'] = sec
 
 		if quiet
-			self['flv'] = tmpfile
-			# pp to_s
+			self['flv'] = file
 			`#{to_s}`
 		else
-			# pp "#{to_s} | tee #{tmpfile} | mplayer -"
-			`#{to_s} | tee #{tmpfile} | mplayer -`
+			`#{to_s} | tee #{file} | mplayer -`
 		end
 	end
 
