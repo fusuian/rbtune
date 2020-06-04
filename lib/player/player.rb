@@ -25,9 +25,13 @@ class Player < Hash
 	end
 
 
-
-
-	private
-
+	# 音声ファイル file の長さ(sec)を返す
+	def duration(file)
+		stdout, stderr, status = Open3.capture3("ffprobe #{file}")
+		stderr =~ /Duration: (\d{2}):(\d{2}):(\d{2}.\d{2})/m
+		hour, min = [$1, $2].map(&:to_i)
+		sec = $3.to_f
+		hour*60*60 + min*60 + sec
+	end
 
 end
