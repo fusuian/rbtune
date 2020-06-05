@@ -10,10 +10,6 @@ require 'swf_ruby'
 class Radiko < Radio
 	attr_reader :authtoken
 
-	def initialize
-		super
-		@ext = 'flv'
-	end
 
 	def playerurl
 		"http://radiko.jp/apps/js/flash/myplayer-release.swf"
