@@ -12,7 +12,7 @@ class Radiko < Radio
 
 	def initialize
 		super
-		@ext = 'aac'
+		@ext = 'flv'
 	end
 
 	def playerurl

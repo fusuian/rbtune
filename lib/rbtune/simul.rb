@@ -8,8 +8,8 @@ class Simul < Radio
 
 	def initialize
 		super
-		@ext = 'wma'
-		@out_ext = 'aac'
+		@ext     = 'asf'
+		@out_ext = 'm4a'
 	end
 
 
