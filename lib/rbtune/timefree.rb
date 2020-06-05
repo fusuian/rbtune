@@ -26,7 +26,7 @@ class TimeFree < RadikoPremium
 		player = create_player uri
 		dt = datetime starttime
 		recfile = make_recfile filename, dt
-		stdout, stderr, status = player.rec recfile
+		stdout, stderr, status = player.rec recfile, nil
 		case stderr
 		when /400 Bad Request/
 			raise HTTPBadRequestException
