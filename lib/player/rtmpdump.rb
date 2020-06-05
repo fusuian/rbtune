@@ -25,8 +25,10 @@ class RtmpDump < Player
 
 		if quiet
 			self['flv'] = file
+			puts "rec: #{to_s}"
 			`#{to_s}`
 		else
+			puts "rec: #{to_s}"
 			`#{to_s} | tee #{file} | mplayer -`
 		end
 	end

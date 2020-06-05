@@ -40,6 +40,7 @@ class Mplayer < Player
 			self['nosound'] = ''	# 音声を再生しない
 		end
 
+		puts "rec: #{to_s}"
 		stdin, stdout, stderr, wait_thread = Open3.popen3(to_s)
 		dsec = -1
 		while dsec <= sec
