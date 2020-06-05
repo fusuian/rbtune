@@ -6,6 +6,10 @@ require "player/ffmpeg"
 require "fileutils"
 
 class Agqr < Radio
+  def initialize
+    @ext     = 'flv'
+    @out_ext = 'm4a'
+  end
 
   def fetch_stations
     uri = "rtmp://fms-base1.mitene.ad.jp/agqr/aandg1"
@@ -25,7 +29,7 @@ class Agqr < Radio
     ffmpeg['loglevel'] = 'quiet'
     ffmpeg['i'] = %Q("#{tmpfile}")
     ffmpeg['acodec'] = 'copy'
-    stdout, stderr, status = ffmpeg.rec recfile
+    stdout, stderr, status = ffmpeg.rec recfile, nil
     FileUtils.rm tmpfile if status.success?
   end
 
