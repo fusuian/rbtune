@@ -122,26 +122,31 @@ class Radio
 			# $stderr.puts "play: #{sec}, #{filename}, #{quiet}"
 			player      = create_player uri
 			remain_sec  = sec
-			res         = nil
-			tmpfile     = nil
 			rtime       = 0
 			minimum_sec = 60   # 残り録音時間がこれ以下ならば、録音が中断してもやり直さない
+			datetimes   = []
 			begin
 				rtime += Benchmark.realtime do
 					dt = datetime dt
+					datetimes << dt
 					tmpfile = make_tmpfile @channel, dt
-					res = player.rec tmpfile, remain_sec, quiet
-					recfile = make_recfile(filename, dt)
-					convert tmpfile, recfile
+					player.rec tmpfile, remain_sec, quiet
 				end
 				remain_sec -= rtime
 				dt = DateTime.now
 			end while remain_sec >= minimum_sec
 
 		rescue Interrupt
-			convert tmpfile, make_recfile(filename, dt)
+			# do nothing
+
+		ensure
+			# 最後にまとめて convert する
+			datetimes.each do |dt|
+				tmpfile = make_tmpfile @channel, dt
+				recfile = make_recfile(filename, dt)
+				convert tmpfile, recfile
+			end
 		end
-		res
 	end
 
 
