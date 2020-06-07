@@ -75,7 +75,6 @@ class Station
     name.strip
     .sub(/[ -]?FM[ -]?/i, 'FM')
     .sub(/fm|ＦＭ|エフエム|えふえむ/, 'FM')
-    # .sub(/[(（].*?[）)]/, '')
     .tr('　！＠', ' !@')
   end
 

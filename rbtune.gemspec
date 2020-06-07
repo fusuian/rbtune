@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Playing and Recording Radiko, Radiru*Radiru and the other IP simulcast sites.}
   spec.homepage      = "https://github.com/fusuian/rbtune"
   spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
+  spec.required_ruby_version = Gem::Requirement.new("~> 2.5")
 
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|

@@ -74,7 +74,7 @@ class Simul < Radio
 
 			title  = station.at('td > p > strong > a').text.strip
 			links0 = player.map! {|e| e['href']}
-			links  = links0.filter { |uri| uri =~ %r{\.asx\Z|nkansai.tv} }
+			links  = links0.select { |uri| uri =~ %r{\.asx\Z|nkansai.tv} }
 			if links.empty?
 				# $stderr.puts "#{title}: #{links0 * ', '}"
 			else
