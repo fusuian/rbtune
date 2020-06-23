@@ -25,7 +25,7 @@ ffmpeg, rtmpdump, mplayer をインストールする必要があります。
 
     $ sudo apt install ffmpeg rtmpdump mplayer
 
-rbtune 本体は gem でインストールできます。Ruby 2.6以降が必要です。
+rbtune 本体は gem でインストールできます。Ruby 2.5以降が必要です。
 
     $ gem install rbtune
 
