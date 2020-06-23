@@ -43,8 +43,20 @@ class Mplayer < Player
 		puts "rec: #{to_s}"
 		stdin, stdout, stderr, wait_thread = Open3.popen3(to_s)
 		dsec = -1
+		psec = dsec
+		wait = 0
+		i = 0
 		while dsec <= sec
 			dsec = duration(file)
+			if dsec == psec
+				wait += 1
+				break if wait > 5
+			else
+				wait = 0
+				psec = dsec
+			end
+			p [i, dsec, psec, wait] if wait > 0
+			i += 1
 			sleep 1
 		end
 		stdin.write 'q'

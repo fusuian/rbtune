@@ -136,7 +136,7 @@ class Radio
 				dt = DateTime.now
 			end while remain_sec >= minimum_sec
 
-		rescue Interrupt
+		rescue Interrupt, Errno::EPIPE
 			# do nothing
 
 		ensure
