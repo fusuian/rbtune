@@ -5,6 +5,8 @@ require "player/player"
 
 class Mplayer < Player
 
+  WAIT_LIMIT = 3
+
 	def initialize(url)
 		@url=url
 		self['cache']     = 64
@@ -46,7 +48,6 @@ class Mplayer < Player
 		psec = dsec
 		wait = 0
 		i = 0
-		WAIT_LIMIT = 3
 		while dsec <= sec
 			dsec = duration(file)
 			if dsec == psec
