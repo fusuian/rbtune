@@ -43,7 +43,7 @@ class FFMpeg < Player
 			cmd = to_s
 		else
 			self['f'] = 'mpegts'
-			@output = 'pipe:1'
+			@output = '-'
 			cmd = "#{to_s} | tee #{file} | #{@mplayer}"
 		end
 
