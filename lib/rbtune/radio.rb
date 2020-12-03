@@ -167,7 +167,7 @@ class Radio
 		ffmpeg = FFMpeg.new
 		ffmpeg['loglevel'] = 'quiet'
 		ffmpeg['i'] = %Q("#{tmpfile}")
-		ffmpeg['b:a'] = '70k'
+		# ffmpeg['b:a'] = '70k'
 		stdout, stderr, status = ffmpeg.rec recfile, nil
 		FileUtils.rm tmpfile if status.success?
 	end
