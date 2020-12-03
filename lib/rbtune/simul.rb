@@ -9,7 +9,6 @@ class Simul < Radio
 	def initialize
 		super
 		@ext     = 'asf'
-		@out_ext = 'm4a'
 	end
 
 
@@ -41,11 +40,6 @@ class Simul < Radio
 		mplayer = Mplayer.new uri
 		mplayer.merge! 'benchmark' => '',	'vo' => 'null'
 		mplayer
-	end
-
-
-	def convert(tmpfile, recfile)
-		convert_ffmpeg(tmpfile, recfile)
 	end
 
 
