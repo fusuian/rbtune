@@ -7,30 +7,22 @@ require "fileutils"
 
 class Agqr < Radio
   def initialize
-    @ext     = 'flv'
-    @out_ext = 'm4a'
+    @ext = 'm4a'
   end
 
   def fetch_stations
-    uri = "rtmp://fms-base1.mitene.ad.jp/agqr/aandg1"
+    uri = 'https://fms2.uniqueradio.jp/agqr10/aandg1.m3u8'
     [Station.new('AGQR', uri, name: '超A&G+', ascii_name: 'aandg1')]
   end
 
 
   def create_player(uri)
-    rtmpdump           = RtmpDump.new
-    rtmpdump['rtmp']   = uri
-    rtmpdump
-  end
-
-
-  def convert(tmpfile, recfile)
-    ffmpeg = FFMpeg.new
-    ffmpeg['loglevel'] = 'quiet'
-    ffmpeg['i'] = %Q("#{tmpfile}")
-    ffmpeg['acodec'] = 'copy'
-    stdout, stderr, status = ffmpeg.rec recfile, nil
-    FileUtils.rm tmpfile if status.success?
+    player = FFMpeg.new
+    player['loglevel'] = 'quiet'
+    player['i']      = uri     # input stream
+    player['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
+    # player['bsf:a'] = 'aac_adtstoasc'
+    player
   end
 
 end
