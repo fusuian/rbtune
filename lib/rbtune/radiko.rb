@@ -3,7 +3,7 @@
 
 require "mechanize"
 require "rbtune/radio"
-require "player/rtmpdump"
+require "player/ffmpeg"
 require 'swf_ruby'
 
 
@@ -36,49 +36,50 @@ class Radiko < Radio
 			swfextract playerfile, 12, keyfile
 		end
 
-		@authtoken, partialkey = authenticate1 'https://radiko.jp/v2/api/auth1_fms'
-		@area_id, @area_ja, @area_en = authenticate2 'https://radiko.jp/v2/api/auth2_fms', authtoken, partialkey
+		@authtoken, partialkey = authenticate1 'https://radiko.jp/v2/api/auth1'
+		@area_id, @area_ja, @area_en = authenticate2 'https://radiko.jp/v2/api/auth2', authtoken, partialkey
 		puts "area: #{area_id} (#{area_ja}: #{area_en})"
 	end
 
 
 	def channel_to_uri
-		xml = agent.get "http://radiko.jp/v2/station/stream/#{@channel}.xml"
-		xml.at('//url/item').text
+		uri = "http://radiko.jp/v2/station/stream_smh_multi/#{@channel}.xml"
+		xml = agent.get uri
+		xml.at('//url/playlist_create_url').text
 	end
 
 
 	def create_player(uri)
-		rtmpdump           = RtmpDump.new
-		rtmpdump['rtmp']   = uri
-		rtmpdump['swfVfy'] = playerurl
-		rtmpdump['conn']   = %Q(S:"" --conn S:""  --conn S:""  --conn S:#{authtoken})
-		rtmpdump
+		opts = {
+			fflags: 'discardcorrupt',
+			headers: %Q("X-Radiko-Authtoken: #{authtoken}"),
+			i: uri,
+		}
+		player = FFMpeg.new
+		player.merge! opts
+		player
 	end
 
 
 	def authenticate1(url)
-		res = agent.post url, {}, {
-				'pragma'               => 'no-cache',
-				'X-Radiko-App'         => 'pc_ts',
-				'X-Radiko-App-Version' => '4.0.0',
-				'X-Radiko-User'        => 'test-stream',
+		agent.request_headers = {
+				'X-Radiko-App'         => 'pc_html5',
+				'X-Radiko-App-Version' => '0.0.1',
 				'X-Radiko-Device'      => 'pc',
+				'X-Radiko-User'        => 'dummy_user',
 			}
-		s = res.body
-		s.sub! /\r\n\r\n.*/m, ''
-		arr = s.split(/\r\n/).map{|s| s.split('=')}.flatten
-		auth1 = Hash[*arr]
-		authtoken = auth1['X-Radiko-AuthToken'] || auth1['X-RADIKO-AUTHTOKEN']
-		offset = auth1['X-Radiko-KeyOffset'].to_i
-		length = auth1['X-Radiko-KeyLength'].to_i
-		partialkey = read_partialkey keyfile, offset, length
+		res = agent.get url
+		auth1 = res.response
+		authtoken = auth1['x-radiko-authtoken']
+		offset = auth1['x-radiko-keyoffset'].to_i
+		length = auth1['x-radiko-keylength'].to_i
+		partialkey = read_partialkey offset, length
 		[authtoken, partialkey]
 	end
 
 
-	def read_partialkey(file, offset, length)
-		key = File.open(file, "rb") { |io| io.read(offset + length) }
+	def read_partialkey(offset, length)
+		key = "bcd151073c03b352e1ef2fd66c32209da9ca0afa"
 		Base64.encode64(key[offset,length]).chomp
 	end
 
@@ -87,15 +88,13 @@ class Radiko < Radio
 	def authenticate2(url, authtoken, partialkey)
 		# pp [url, authtoken, partialkey]
 		agent.verify_mode = OpenSSL::SSL::VERIFY_NONE
-		res = agent.post url, {}, {
-			'pragma'               => 'no-cache',
-			'X-Radiko-App'         => 'pc_ts',
-			'X-Radiko-App-Version' => '4.0.0',
-			'X-Radiko-User'        => 'test-stream',
+		agent.request_headers = {
 			'X-Radiko-Device'      => 'pc',
+			'X-Radiko-User'        => 'dummy_user',
 			'X-Radiko-Authtoken'   => authtoken,
 			'X-Radiko-Partialkey'  => partialkey,
 		}
+		res = agent.get url
 		body = res.body
 		body.force_encoding 'utf-8'
 		body.split(',').map(&:strip)

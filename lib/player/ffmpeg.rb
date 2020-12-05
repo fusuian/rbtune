@@ -28,7 +28,7 @@ class FFMpeg < Player
 
 	def play
 		self['f'] = 'mpegts'
-		@output = 'pipe:1'
+		@output = '-'
 		cmd = "#{to_s} | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
 		`#{cmd}`
