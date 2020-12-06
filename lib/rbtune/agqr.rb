@@ -15,14 +15,4 @@ class Agqr < Radio
     [Station.new('AGQR', uri, name: '超A&G+', ascii_name: 'aandg1')]
   end
 
-
-  def create_player(uri)
-    player = FFMpeg.new
-    player['loglevel'] = 'quiet'
-    player['i']      = uri     # input stream
-    player['acodec'] = 'copy'  # acodecオプションはiオプションのあとに置かないとエラー
-    # player['bsf:a'] = 'aac_adtstoasc'
-    player
-  end
-
 end

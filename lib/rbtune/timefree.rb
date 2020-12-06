@@ -40,12 +40,4 @@ class TimeFree < RadikoPremium
 	end
 
 
-	def create_player(uri)
-		ffmpeg = FFMpeg.new
-		ffmpeg['loglevel'] = 'info'
-		ffmpeg['headers']  = %Q("X-Radiko-AuthToken: #{authtoken}")
-		ffmpeg['i']        = %Q("#{uri}")
-		ffmpeg['acodec']   = 'copy' # acodecオプションはiオプションのあとに置かないとエラー
-		ffmpeg
-	end
 end
