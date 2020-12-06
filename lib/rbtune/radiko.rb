@@ -4,38 +4,14 @@
 require "mechanize"
 require "rbtune/radio"
 require "player/ffmpeg"
-require 'swf_ruby'
 
 
 class Radiko < Radio
 	attr_reader :authtoken
 
 
-	def playerurl
-		"http://radiko.jp/apps/js/flash/myplayer-release.swf"
-	end
-
-
-	def playerfile
-		"player.swf"
-	end
-
-
-	def keyfile
-		"authkey.png"
-	end
-
-
 	# get_auth2 の返り値により @area_id, @area_ja, @area_en が設定される
 	def open
-		unless File.exists? playerfile
-			$stderr.puts 'fetching player...'
-			fetch_file playerurl, playerfile
-		end
-		unless File.exists? keyfile
-			swfextract playerfile, 12, keyfile
-		end
-
 		@authtoken, partialkey = authenticate1 'https://radiko.jp/v2/api/auth1'
 		@area_id, @area_ja, @area_en = authenticate2 'https://radiko.jp/v2/api/auth2', authtoken, partialkey
 		puts "area: #{area_id} (#{area_ja}: #{area_en})"
@@ -117,26 +93,5 @@ class Radiko < Radio
 		end
 	end
 
-
-	def fetch_file(url, file=nil)
-		content = agent.get_file(url)
-		File.open(file, "wb") { |fout| fout.write content } if file
-		content
-	end
-
-
-	def swfextract(swffile, character_id, out_file)
-		swf = SwfRuby::SwfDumper.new
-		swf.open(swffile)
-		swf.tags.each_with_index do |tag, i|
-			tag = swf.tags[i]
-			if tag.character_id && tag.character_id == character_id
-				offset = swf.tags_addresses[i]
-				len = tag.length
-				File.open(out_file, 'wb') { |out| out.print tag.data[6..-1] }
-				break
-			end
-		end
-	end
 
 end

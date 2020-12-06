@@ -24,8 +24,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "mechanize", "~> 2.7"
-  spec.add_dependency "rmagick", "= 2.13.2" # swf_ruby が依存するので固定
-  spec.add_dependency "swf_ruby", "~> 0.2"
   spec.add_dependency "pit", "~> 0.0.7"
   spec.add_development_dependency "bundler", "~> 2.1"
   spec.add_development_dependency "rake", ">= 12.3.3"
