@@ -26,14 +26,11 @@ class Radiko < Radio
 
 
 	def create_player(uri)
-		opts = {
-			fflags: 'discardcorrupt',
+		FFMpeg.new( {
 			headers: %Q("X-Radiko-Authtoken: #{authtoken}"),
-			i: uri,
-		}
-		player = FFMpeg.new
-		player.merge! opts
-		player
+			i: %Q("#{uri}"),
+			# acodec: 'copy', # acodecオプションはiオプションのあとに置かないとエラー
+		} )
 	end
 
 

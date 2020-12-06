@@ -89,6 +89,10 @@ class Radio
 
 	def create_player(uri)
 		# rtmpdumpのコマンドラインを生成する(playから呼ばれる)
+		FFMpeg.new( {
+			i: uri,
+			# acodec: 'copy', # acodecオプションはiオプションのあとに置かないとエラー
+		} )
 	end
 
 

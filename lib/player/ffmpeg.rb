@@ -4,7 +4,8 @@ require "open3"
 require "player/mplayer"
 
 class FFMpeg < Player
-	def initialize
+	def initialize(hash={})
+		self.merge! hash
 		self['loglevel'] = 'warning'
 		self['n']        = '' # do not overwrite
 		@mplayer = Mplayer.new('-')
