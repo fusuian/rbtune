@@ -10,7 +10,8 @@
 require "date"
 require "benchmark"
 require "net/http"
-require "rexml/document"
+require "player/ffmpeg"
+require "rbtune/station"
 
 class Radio
 	attr_accessor :outdir

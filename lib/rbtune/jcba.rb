@@ -3,7 +3,6 @@
 JCBAサイマルラジオを受信する
 =end
 require "rbtune/listenradio"
-require "rbtune/station"
 
 
 class Jcba < ListenRadio

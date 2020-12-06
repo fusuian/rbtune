@@ -5,7 +5,6 @@
 
 
 require "rbtune/radio"
-require "player/ffmpeg"
 require "json"
 
 

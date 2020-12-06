@@ -1,8 +1,5 @@
 require "rbtune/radiko_premium"
-require "rbtune/station"
-require "player/ffmpeg"
 require "date"
-require "fileutils"
 
 class DateTime
 	def timefree

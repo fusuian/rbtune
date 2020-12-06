@@ -1,9 +1,6 @@
 # 文化放送 超A&G+ を受信する
 
 require "rbtune/radio"
-require "player/rtmpdump"
-require "player/ffmpeg"
-require "fileutils"
 
 class Agqr < Radio
   def initialize

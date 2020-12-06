@@ -2,8 +2,6 @@
 # coding: utf-8
 
 require "rbtune/radio"
-require "player/ffmpeg"
-require "fileutils"
 
 class Radiru < Radio
 

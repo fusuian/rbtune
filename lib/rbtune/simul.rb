@@ -2,7 +2,7 @@
 
 require "rbtune/radio"
 require "player/mplayer"
-require "rbtune/station"
+require "rexml/document"
 
 class Simul < Radio
 

@@ -3,7 +3,6 @@
 
 require "mechanize"
 require "rbtune/radio"
-require "player/ffmpeg"
 
 
 class Radiko < Radio
