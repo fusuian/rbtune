@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # coding: utf-8
 
-# require "mechanize"
 require "json"
 require "optparse"
 require "rbtune/radio"
@@ -19,12 +18,14 @@ class Onsen < Radio
     {}
   end
 
+  # 音泉の番組情報リストを返す
   def fetch_programs(url = URL)
     res = agent.get(url)
     JSON.parse(res.body)
   end
 
 
+  # 音泉の番組リストを返す
   def list_programs(progs)
     progs.map do |prog|
       performers = prog['performers'].map {|perf| perf['name']} * ', '
