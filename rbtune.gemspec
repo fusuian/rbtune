@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
     f.match(%r{^(test|spec|features)/})
   end
   spec.bindir        = "exe"
-  spec.executables = %w(rbtune timefree)
+  spec.executables = %w(rbtune timefree onsen)
   spec.require_paths = ["lib"]
 
   spec.add_dependency "mechanize", "~> 2.7"

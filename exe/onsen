@@ -1,0 +1,85 @@
+#!/usr/bin/env ruby
+# coding: utf-8
+
+# require "mechanize"
+require "json"
+require "optparse"
+require "rbtune/radio"
+require "player/ffmpeg"
+
+class Onsen < Radio
+  URL = "https://www.onsen.ag/web_api/programs/"
+
+  def initialize
+    @ext = 'aac'
+  end
+
+
+  def self.channels
+    {}
+  end
+
+  def fetch_programs(url = URL)
+    res = agent.get(url)
+    JSON.parse(res.body)
+  end
+
+
+  def list_programs(progs)
+    progs.each do |prog|
+      performers = prog['performers'].map {|perf| perf['name']} * ', '
+      puts "『#{prog['title']}』 更新:#{prog['updated'] || '-'} パーソナリティ:#{performers} "
+    end
+  end
+
+
+  def record(filename, dt: DateTime.now)
+    puts filename,
+    uri = channel_to_uri
+    raise 'not tuned yet.' unless uri
+
+    puts "record: #{uri}"
+    # $stderr.puts "play: #{sec}, #{filename}, #{quiet}"
+    player  = create_player uri
+    player['acodec'] = 'copy'
+    recfile = make_recfile(filename, datetime(dt))
+    player.rec recfile, nil
+  end
+
+end
+
+opt = OptionParser.new
+Version = "0.0.1" #Rbtune::VERSION
+opt.banner += <<EOS
+ title
+
+ 音泉の公開番組をダウンロードする
+
+EOS
+
+filename      = nil
+list          = nil
+
+opt.on("-o FILE", "--output", "録音するファイル名 (省略時、番組タイトル)"){|v| filename = v}
+opt.on("-l", "--list", "番組リストを表示して終了" ) { list = true }
+opt.parse! ARGV
+
+
+radio = Onsen.new
+progs = radio.fetch_programs
+case
+when list
+  radio.list_programs(progs)
+else
+  radio.outdir = ENV['RADIODIR'] || '.'
+  title = ARGV[0]
+  matched = progs.select { |prog| prog['title'].include? title}
+  matched.each do |prog|
+    title = prog['title']
+    downloadable = prog['contents'].select { |rp| rp['streaming_url']}
+    downloadable.each do |content|
+      radio.tune content['streaming_url']
+      radio.record title
+    end
+  end
+end
