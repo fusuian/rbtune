@@ -1,7 +1,6 @@
 #radiko.rb
 # coding: utf-8
 
-require "mechanize"
 require "rbtune/radio"
 
 

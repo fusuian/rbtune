@@ -10,6 +10,7 @@
 require "date"
 require "benchmark"
 require "net/http"
+require "mechanize"
 require "player/ffmpeg"
 require "rbtune/station"
 
