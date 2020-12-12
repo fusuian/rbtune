@@ -48,19 +48,32 @@ class Onsen < Radio
 
 end
 
+
+# 番組リスト progs から、公開中の番組をダウンロードする。
+def record(progs)
+  radio.outdir = ENV['RADIODIR'] || '.'
+  progs.each do |prog|
+    title = prog['title']
+    downloadable = prog['contents'].select { |rp| rp['streaming_url']}
+    downloadable.each do |content|
+      radio.tune content['streaming_url']
+      radio.record title
+    end
+  end
+end
+
+
+
 opt = OptionParser.new
 Version = "0.0.1" #Rbtune::VERSION
 opt.banner += <<EOS
  title
 
- 音泉の公開番組をダウンロードする
+ 音泉の番組のうち、タイトルが引数 title と部分一致するものについて、最新版をダウンロードする。
 
 EOS
 
-filename      = nil
 list          = nil
-
-opt.on("-o FILE", "--output", "録音するファイル名 (省略時、番組タイトル)"){|v| filename = v}
 opt.on("-l", "--list", "番組リストを表示して終了" ) { list = true }
 opt.parse! ARGV
 
@@ -71,15 +84,7 @@ case
 when list
   radio.list_programs(progs)
 else
-  radio.outdir = ENV['RADIODIR'] || '.'
   title = ARGV[0]
   matched = progs.select { |prog| prog['title'].include? title}
-  matched.each do |prog|
-    title = prog['title']
-    downloadable = prog['contents'].select { |rp| rp['streaming_url']}
-    downloadable.each do |content|
-      radio.tune content['streaming_url']
-      radio.record title
-    end
-  end
+  record matched
 end
