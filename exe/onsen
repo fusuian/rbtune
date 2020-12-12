@@ -26,9 +26,9 @@ class Onsen < Radio
 
 
   def list_programs(progs)
-    progs.each do |prog|
+    progs.map do |prog|
       performers = prog['performers'].map {|perf| perf['name']} * ', '
-      puts "『#{prog['title']}』 更新:#{prog['updated'] || '-'} パーソナリティ:#{performers} "
+      "『#{prog['title']}』 更新:#{prog['updated'] || '-'} パーソナリティ:#{performers} "
     end
   end
 
@@ -82,7 +82,7 @@ radio = Onsen.new
 progs = radio.fetch_programs
 case
 when list
-  radio.list_programs(progs)
+  radio.list_programs(progs).each {|s| puts s}
 else
   title = ARGV[0]
   matched = progs.select { |prog| prog['title'].include? title}
