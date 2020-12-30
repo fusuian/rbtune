@@ -37,4 +37,9 @@ class TimeFree < RadikoPremium
 	end
 
 
+  def create_player(uri)
+    player = super
+    player['acodec'] = 'copy'
+    player
+  end
 end
