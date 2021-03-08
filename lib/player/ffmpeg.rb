@@ -45,7 +45,7 @@ class FFMpeg < Player
 		else
 			self['f'] = 'mpegts'
 			@output = '-'
-			cmd = "#{to_s} | tee #{file} | #{@mplayer}"
+			cmd = %Q(#{to_s} | tee "#{file}" | #{@mplayer})
 		end
 
 		puts "rec: #{cmd}"

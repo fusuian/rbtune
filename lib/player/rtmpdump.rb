@@ -16,7 +16,7 @@ class RtmpDump < Player
 
 	def play
 		# puts "play: #{to_s} | mplayer -"
-		`#{to_s} | mplayer -`
+		%x(#{to_s} | mplayer -)
 	end
 
 
@@ -24,12 +24,12 @@ class RtmpDump < Player
 		self['stop'] = sec
 
 		if quiet
-			self['flv'] = file
+			self['flv'] = %Q("#{file}")
 			puts "rec: #{to_s}"
-			`#{to_s}`
+			%x(#{to_s})
 		else
 			puts "rec: #{to_s}"
-			`#{to_s} | tee #{file} | mplayer -`
+			%x(#{to_s} | tee "#{file}" | mplayer -)
 		end
 	end
 
