@@ -40,7 +40,7 @@ class FFMpeg < Player
 	def rec(file, sec, quiet = true)
 		self['t'] = sec if sec
 		if quiet
-			@output = file
+			@output = %Q("#{file}")
 			cmd = to_s
 		else
 			self['f'] = 'mpegts'
