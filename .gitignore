@@ -10,8 +10,8 @@
 /vendor
 authkey.png
 player.swf
-*.aac
 *.m4a
-*.wma
 *.gem
-*.ts
+*.asf
+*.mp4
+
