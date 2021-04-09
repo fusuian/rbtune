@@ -22,8 +22,7 @@ class FFMpeg < Player
 
 
 	def to_s
-		# novideoオプション -vn は、この位置でないと機能しない
-		%Q(#{command} #{options} -vn #{@output})
+		%Q(#{command} #{options} #{@output})
 	end
 
 

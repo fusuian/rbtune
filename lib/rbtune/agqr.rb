@@ -4,8 +4,9 @@ require "rbtune/radio"
 
 class Agqr < Radio
   def initialize
-    @ext = 'm4a'
+    @ext = 'mp4'
   end
+
 
   def fetch_stations
     uri = 'https://fms2.uniqueradio.jp/agqr10/aandg1.m3u8'
