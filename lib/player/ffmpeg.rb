@@ -28,7 +28,8 @@ class FFMpeg < Player
 
 
 	def play
-		self['f'] = 'mpegts'
+		self['f'] = 'asf'
+		self['codec'] = 'copy'
 		@output = '-'
 		cmd = "#{to_s} | #{@mplayer}"
 		$stderr.puts 'play: '+cmd
@@ -39,13 +40,11 @@ class FFMpeg < Player
 
 	def rec(file, sec, quiet = true)
 		self['t'] = sec if sec
-		if quiet
-			@output = %Q("#{file}")
-			cmd = to_s
-		else
-			self['f'] = 'mpegts'
-			@output = '-'
-			cmd = %Q(#{to_s} | tee "#{file}" | #{@mplayer})
+		self['codec'] = 'copy'
+		@output = %Q("#{file}")
+		cmd = to_s
+		unless quiet
+			cmd << %Q( -t #{sec} -f asf -codec copy - | #{@mplayer})
 		end
 
 		puts "rec: #{cmd}"
