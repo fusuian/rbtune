@@ -10,12 +10,6 @@ require "json"
 
 class ListenRadio < Radio
 
-	def initialize
-		super
-		@ext = 'mp4'
-	end
-
-
 	def stations_uri
 		'http://listenradio.jp/service/channel.aspx'
 	end
@@ -32,6 +26,5 @@ class ListenRadio < Radio
 			Station.new(id, uri, name: name, description: desc)
 		end
 	end
-
 
 end
