@@ -8,10 +8,8 @@ class Mplayer < Player
   WAIT_LIMIT = 3
 
 	def initialize(url)
-		@url=url
-		self['cache']     = 64
-		self['cache-min'] = 16
-		self['quiet']     = ''      # 画面表示をしない
+		@url = url
+		self['quiet'] = ''      # 画面表示をしない
 	end
 
 
