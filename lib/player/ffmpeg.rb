@@ -37,13 +37,14 @@ class FFMpeg < Player
 	end
 
 
-	def rec(file, sec, quiet = true)
+	def rec(file, sec, quiet: true, video: false)
 		self['t'] = sec if sec
+		self['vn'] = '' unless video
 		self['codec'] = 'copy'
 		@output = %Q("#{file}")
 		cmd = to_s
 		unless quiet
-			cmd << %Q( -t #{sec} -f asf -codec copy - | #{@mplayer})
+			cmd << %Q( -t #{sec} -f asf -codec copy #{"-vn" unless video} - | #{@mplayer})
 		end
 
 		puts "rec: #{cmd}"

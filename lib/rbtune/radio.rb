@@ -119,7 +119,7 @@ class Radio
 	end
 
 
-	def record(filename, sec, quiet: false, dt: DateTime.now)
+	def record(filename, sec, quiet: false, video: false, dt: DateTime.now)
 		begin
 			uri = channel_to_uri
 			raise 'not tuned yet.' unless uri
@@ -129,14 +129,14 @@ class Radio
 			player      = create_player uri
 			remain_sec  = sec
 			rtime       = 0
-			minimum_sec = 60   # 残り録音時間がこれ以下ならば、録音が中断してもやり直さない
+			minimum_sec = 59   # 残り録音時間がこれ以下ならば、録音が中断してもやり直さない
 			datetimes   = []
 			begin
 				rtime += Benchmark.realtime do
 					dt = datetime dt
 					datetimes << dt
 					tmpfile = make_tmpfile @channel, dt
-					player.rec tmpfile, remain_sec, quiet
+					player.rec tmpfile, remain_sec, quiet: quiet, video: video
 				end
 				remain_sec -= rtime
 				dt = DateTime.now

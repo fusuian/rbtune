@@ -33,7 +33,7 @@ class Mplayer < Player
 	end
 
 
-	def rec(file, sec, quiet = true)
+	def rec(file, sec, quiet: true, video: false)
 		self['dumpstream'] = ''
 		self['dumpfile']   = %Q("#{file}")
 		if quiet

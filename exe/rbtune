@@ -8,6 +8,7 @@ require "pp"
 
 filename = nil
 quiet    = false
+video    = false
 
 account        = nil
 list_stations  = false
@@ -25,6 +26,7 @@ EOS
 
 opt.on("-o FILE", "--output", "録音するファイル名 (省略時、放送局コード)"){|v| filename = v}
 opt.on("-q", "--quiet", "録音時に再生しない" ) { quiet = true }
+opt.on("-v", "--video", "動画も保存する (超A&G+のみ)" ) { video = true }
 opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { list_stations = true }
 opt.on("--fetch-stations", "放送局リストを取得して終了" ) { fetch_stations = true }
 opt.on("--set-account ACCOUNT", "radikoプレミアムのアカウントを登録して終了") {|v| account = v}
@@ -79,7 +81,7 @@ begin
   if min > 0
     filename ||= channel
     sec = min*60
-    radio.record filename, sec, quiet: quiet
+    radio.record filename, sec, quiet: quiet, video: video
   else
     radio.play
   end
