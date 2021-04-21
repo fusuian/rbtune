@@ -9,6 +9,9 @@ require "json"
 
 
 class ListenRadio < Radio
+  def initialize
+    @ext = 'aac'
+  end
 
 	def stations_uri
 		'http://listenradio.jp/service/channel.aspx'
