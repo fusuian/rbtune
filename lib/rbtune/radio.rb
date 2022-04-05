@@ -180,7 +180,7 @@ class Radio
 
 
 	def datetime(dt)
-		dt.to_s[0..15].gsub(/:/, '=')
+		dt.to_s[0..15].gsub(/:/, '=').sub(/ /, "T")
 	end
 
 

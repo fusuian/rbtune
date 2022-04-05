@@ -11,6 +11,7 @@ time     = nil
 min      = 30
 filename = nil
 
+keyword        = nil
 account        = nil
 list_stations  = false
 fetch_stations = false
@@ -26,6 +27,7 @@ opt.banner += <<"EOS"
     time:    時:分
 
 EOS
+opt.on("-w WORD", "--word", "番組検索ワード"){|v| keyword=v}
 opt.on("-o FILE", "--output", "録音するファイル名 (省略時、放送局コード)"){|v| filename=v}
 opt.on("-l", "--list-stations", "放送局リストを表示して終了" ) { list_stations = true }
 opt.on("--fetch-stations", "放送局リストを取得して終了" ) { fetch_stations = true }
@@ -45,8 +47,9 @@ when list_stations
 when fetch_stations
   Station.fetch_stations
   exit
+end
 
-when ARGV.size != 4
+if ARGV.size == 0
   puts opt.help
   exit 1
 end
@@ -61,27 +64,40 @@ else
   exit 1
 end
 
-filename ||= channel
+filename ||= keyword || channel
 
-begin
-  date = ARGV[1]
-  time = ARGV[2].dup
-  # 25-29時が指定された場合、翌日の未明とする
-  day  = time.sub!(/(2[5-9]):/){ "#{$1.to_i-24}:" }? 1 : 0
-  starttime = DateTime.parse("#{date}T#{time}") + day
-  # date が sun,mon,..,sat など曜日指定だと、当日以外は翌日以降を返すので、
-  # 未来だったら前の週の日付を求める (当日だったらそのまま)
-  starttime -= 7 if starttime > Date.today + 1
+if keyword
+  progs = TimeFree::Program::fetch(channel)
+  progs = TimeFree::Program::timefree(progs)
+  progs = TimeFree::Program::search(progs, keyword)
+  if progs.size == 1
+    prog = progs[0]
+    starttime = prog.from
+    endtime = prog.to
+    puts "found: #{prog.title} #{starttime} - #{endtime}"
+  else
+    exit 1
+  end
+else
+  begin
+    date = ARGV[1]
+    time = ARGV[2].dup
+    # 25-29時が指定された場合、翌日の未明とする
+    day  = time.sub!(/(2[5-9]):/){ "#{$1.to_i-24}:" }? 1 : 0
+    starttime = Date.parse("#{date}T#{time}") + day
+    # date が sun,mon,..,sat など曜日指定だと、当日以外は翌日以降を返すので、
+    # 未来だったら前の週の日付を求める (当日だったらそのまま)
+    starttime -= 7 if starttime > Date.today + 1
+    starttime = starttime.to_time
 
-rescue Date::Error
-  puts "日時のフォーマットに誤りがあります: date #{date} time #{time}"
-  exit 1
+  rescue ArgumentError
+    puts "日時のフォーマットに誤りがあります: date=#{date} time=#{time}"
+    exit 1
+  end
+
+  min = ARGV[3].to_f
+  endtime = starttime + min*60
 end
-
-
-min = ARGV[3].to_f
-sec = min*60
-
 
 begin
   radio = TimeFree.new
@@ -92,7 +108,7 @@ begin
   end
   radio.open
   radio.tune channel
-  radio.record filename, starttime, sec
+  radio.record filename, starttime, endtime
 
 rescue Radio::HTTPBadRequestException
   puts "HTTPBadRequest: 番組の公開が終了しています"
