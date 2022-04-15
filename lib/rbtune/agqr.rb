@@ -4,7 +4,7 @@ require "rbtune/radio"
 
 class Agqr < Radio
   def initialize
-    @ext = 'mp4'
+    @ext = 'ts'
   end
 
 
