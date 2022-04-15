@@ -41,7 +41,7 @@ class Mplayer < Player
 		end
 
 		puts "rec (#{sec}s): #{to_s}"
-		stdin, stdout, stderr, wait_thread = Open3.popen3(to_s)
+		stdin, _stdout, _stderr, _wait_thread = Open3.popen3(to_s)
 		dsec = -1
 		psec = dsec
 		wait = 0

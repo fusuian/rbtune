@@ -48,7 +48,7 @@ class FFMpeg < Player
 		end
 
 		puts "rec: #{cmd}"
-		stdout, stderr, status = Open3.capture3(cmd)
+		_stdout, _stderr, _status = Open3.capture3(cmd)
 	end
 
 end

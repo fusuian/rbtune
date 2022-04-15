@@ -54,7 +54,7 @@ class Radio
 
 
 	def self.search(channel)
-		radio_class, station = self.find(channel) || self.match(channel)
+		_radio_class, _station = self.find(channel) || self.match(channel)
 	end
 
 
@@ -63,7 +63,7 @@ class Radio
 	def self.find(id)
 		Radio.bands.each do |tuner|
 			if tuner.stations
-				station = tuner.stations.find {|station| station.id == id}
+				station = tuner.stations.find {|st| st.id == id}
 				return [tuner, station] if station
 			end
 		end
@@ -147,9 +147,9 @@ class Radio
 
 		ensure
 			# 最後にまとめて convert する
-			datetimes.each do |dt|
-				tmpfile = make_tmpfile @channel, dt
-				recfile = make_recfile(filename, dt)
+			datetimes.each do |datetime|
+				tmpfile = make_tmpfile @channel, datetime
+				recfile = make_recfile(filename, datetime)
 				convert tmpfile, recfile
 			end
 		end
@@ -174,7 +174,7 @@ class Radio
 		ffmpeg['loglevel'] = 'quiet'
 		ffmpeg['i'] = %Q("#{tmpfile}")
 		# ffmpeg['b:a'] = '70k'
-		stdout, stderr, status = ffmpeg.rec recfile, nil
+		_stdout, _stderr, status = ffmpeg.rec recfile, nil
 		FileUtils.rm tmpfile if status.success?
 	end
 
@@ -200,7 +200,7 @@ class Radio
 
 	def fetch_stations
 		body = agent.get stations_uri
-		stations = parse_stations body
+		_stations = parse_stations body
 	end
 
 
