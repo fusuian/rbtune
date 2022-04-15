@@ -1,5 +1,5 @@
 require "rbtune/radiko_premium"
-require "date"
+require "time"
 require "open-uri"
 require "nokogiri"
 
@@ -31,6 +31,20 @@ class TimeFree < RadikoPremium
 			raise HTTPForbiddenException
 		end
 	end
+
+	def self.parse_time(date, time)
+		# 24-29時が指定された場合、翌日の未明とする
+		day  = time.sub!(/(2[4-9]):/){ "#{$1.to_i - 24}:" }? 1 : 0
+		date = Date.parse(date) # sun,mon..の曜日名を日付に変換
+		starttime = Time.parse("#{date}T#{time}")
+		today = (Date.today + 1).to_time - 1
+		starttime += day * 24 * 60 * 60
+		# date が sun,mon,..,sat など曜日指定だと、当日以外は翌日以降を返すので、
+		# 未来だったら前の週の日付を求める (当日だったらそのまま)
+		starttime -= 7 * 24 * 60 * 60 if starttime > today
+		starttime
+	end
+
 
 	def channel_to_uri(from, to)
 		%Q(https://radiko.jp/v2/api/ts/playlist.m3u8?l=15&station_id=#{@channel}&ft=#{from}&to=#{to})

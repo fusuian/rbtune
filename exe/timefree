@@ -82,13 +82,7 @@ else
   begin
     date = ARGV[1]
     time = ARGV[2].dup
-    # 25-29時が指定された場合、翌日の未明とする
-    day  = time.sub!(/(2[5-9]):/){ "#{$1.to_i-24}:" }? 1 : 0
-    starttime = Date.parse("#{date}T#{time}") + day
-    # date が sun,mon,..,sat など曜日指定だと、当日以外は翌日以降を返すので、
-    # 未来だったら前の週の日付を求める (当日だったらそのまま)
-    starttime -= 7 if starttime > Date.today + 1
-    starttime = starttime.to_time
+    starttime = TimeFree.parse_time(date, time)
 
   rescue ArgumentError
     puts "日時のフォーマットに誤りがあります: date=#{date} time=#{time}"
