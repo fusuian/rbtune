@@ -19,6 +19,7 @@ fetch_stations = false
 opt = OptionParser.new
 opt.version = Rbtune::VERSION
 opt.banner += <<"EOS"
+ station --word keyword
  station date time minutes
 
  radikoのタイムフリー機能で公開されている番組をファイルに録音する
