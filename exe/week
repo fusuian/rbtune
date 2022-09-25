@@ -1,0 +1,16 @@
+#!/bin/sh
+# 第１曜日、最終曜日、偶数週、奇数週を判定する
+# cron で曜日を指定して、週単位で絞り込むのに使う
+# 例:
+#  00  4 * * sun week 1 && rbtune nhkfm 60       # 第1日曜のみ
+#  59 12 * * sat week last && rbtune chofufm 121 # 最終土曜日のみ
+#  20  9 * * 1-4 week even && rbtune nhkfm 40    # 偶数週のみ
+if [ "$1" = "1" ]; then
+    [ $(date +%d) -le 7 ]
+elif [ "$1" = "last" ]; then
+    [ $(date -d "7days" +%m) -ne $(date +%m) ]
+elif [ "$1" = "even" ]; then
+    [ $(expr $(date +%U) % 2) = "0" ]
+elif [ "$1" = "odd" ]; then
+    [ $(expr $(date +%U) % 2) = "1" ]
+fi
