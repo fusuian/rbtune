@@ -76,8 +76,15 @@ if keyword
     starttime = prog.from
     endtime = prog.to
     puts "found: #{prog.title} #{starttime} - #{endtime}"
-  else
+  elsif progs.empty?
+    $stderr.puts "not found."
     exit 1
+  else
+    # とりあえずリストの最後の番組をとる
+    prog = progs[-1]
+    starttime = prog.from
+    endtime = prog.to
+    puts "found: #{prog.title} #{starttime} - #{endtime}"
   end
 else
   begin
