@@ -39,7 +39,7 @@ class RadikoPremium < Radiko
 
 
 	def login(account, password)
-		agent.post 'https://radiko.jp/ap/member/login/login', {
+		agent.post 'https://radiko.jp/ap/member/webapi/member/login', {
 			mail: account, pass: password
 		}
 
