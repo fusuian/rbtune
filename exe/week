@@ -16,7 +16,7 @@ elif [ "$1" = "4" ]; then
 elif [ "$1" = "last" ]; then
     [ $(date -d "7days" +%m) -ne $(date +%m) ]
 elif [ "$1" = "odd" ]; then
-    [ $(expr $(date +%U) % 2) = "0" ]
-elif [ "$1" = "even" ]; then
     [ $(expr $(date +%U) % 2) = "1" ]
+elif [ "$1" = "even" ]; then
+    [ $(expr $(date +%U) % 2) = "0" ]
 fi
